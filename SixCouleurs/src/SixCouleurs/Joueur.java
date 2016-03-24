@@ -1,9 +1,12 @@
 package SixCouleurs;
 
+import java.util.Scanner;
+
 public class Joueur {
 	public boolean ia = false;
 	public char couleur;
 	public boolean[][] territoire;
+	public int score = 1;
 
 	
 	public boolean isIa() {
@@ -30,6 +33,14 @@ public class Joueur {
 		this.territoire = territoire;
 	}
 	
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+	
 	
 	public void conquerir(char couleur, Plateau p){	//couleur est en majuscule
 		this.couleur = couleur;
@@ -43,10 +54,14 @@ public class Joueur {
 					if (terrain[i][j] == couleur){
 						if (j>0 && terrain[i][j-1] == (char)((int)couleur+32)){
 							terrain[i][j-1] = couleur;
+							territoire[i][j-1] = true;
+							score ++;
 							fin = false;
 						}
-						if (j<terrain.length-1 && terrain[i][j+1] == (char)((int)couleur+32)){
+						if (j<terrain[0].length-1 && terrain[i][j+1] == (char)((int)couleur+32)){
 							terrain[i][j+1] = couleur;
+							territoire[i][j+1] = true;
+							score ++;
 							fin = false;
 						}
 					}
@@ -57,10 +72,14 @@ public class Joueur {
 					if (terrain[i][j] == couleur){
 						if (i>0 && terrain[i-1][j] == (char)((int)couleur+32)){
 							terrain[i-1][j] = couleur;
+							territoire[i-1][j] = true;
+							score ++;
 							fin = false;
 						}
-						if (i<terrain[0].length-1 && terrain[i+1][j] == (char)((int)couleur+32)){
+						if (i<terrain.length-1 && terrain[i+1][j] == (char)((int)couleur+32)){
 							terrain[i+1][j] = couleur;
+							territoire[i+1][j] = true;
+							score ++;
 							fin = false;
 						}
 					}
@@ -70,5 +89,32 @@ public class Joueur {
 		
 		p.setPlateau(terrain);
 	}
+	
+	public void jouer(Joueur[] liste, Plateau p){
+		Scanner scan = new Scanner(System.in);
+		
+		char[] listeCouleur = new char[liste.length];
+		for (int i=0; i<liste.length; i++) listeCouleur[i]=liste[i].getCouleur();	//récupération des couleurs des joueurs adverses
+		
+		boolean bonneCouleur = false;
+		char couleur='B';
+		
+		while (bonneCouleur == false){
+			bonneCouleur = true;
+			System.out.println("Choisissez une couleur à jouer (initiale en majuscule):");
+			
+			couleur = scan.nextLine().charAt(0);		//Retourne le premier caractère
+			for (int i=0; i<listeCouleur.length; i++){
+				if(couleur == listeCouleur[i]) bonneCouleur = false;
+			}
+			
+		}
+		
+		conquerir(couleur, p);
+		System.out.println("Score:" + score);
+		p.afficher();
+	}
+
+	
 	
 }

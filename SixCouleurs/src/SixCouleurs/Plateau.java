@@ -24,6 +24,7 @@ public class Plateau {
 		this.plateau = plateau;
 	}
 	
+	
 	public void afficher(){
 		for (int i=0; i<plateau.length; i++){
 			System.out.print("| ");
