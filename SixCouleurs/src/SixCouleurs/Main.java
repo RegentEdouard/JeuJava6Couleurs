@@ -1,46 +1,66 @@
 package SixCouleurs;
 
-import java.awt.Font;
-import edu.princeton.cs.introcs.StdDraw;
+import java.util.Scanner;
+import javax.swing.JFrame;
 
 public class Main {
 
 	public static void main(String[] args) {
-		int tailleX = 4;
-		int tailleY = 2;
+		int tailleX = 30;
+		int tailleY = 40;
 		Plateau test = new Plateau(tailleX, tailleY);
-		//StdDraw.setCanvasSize(900, 700);	//512*512 pardéfaut
-		//StdDraw.setXscale(900, 0);
-		//StdDraw.setYscale(700, 0);
-		//StdDraw.clear(StdDraw.GRAY);
-		//menuPrincipal();
+		//Fenetre fen = new Fenetre();
+		
+		//choix du mode d'affichage
+		Scanner scan = new Scanner(System.in);
+		char choixAff = 'A';
+		while (choixAff != 'C' && choixAff != 'G'){
+			System.out.println("Quel mode d'affichage voulez vous? (console C, graphique G): ");
+			choixAff = scan.nextLine().charAt(0);
+		}
+		
 		//Création des joueurs
-		Joueur joueur1 = new Joueur();
-		creationJoueur(0, 0, joueur1, test);
-		Joueur joueur2 = new Joueur();
-		creationJoueur(tailleX-1, tailleY-1, joueur2, test);
-		Joueur[] liste = {joueur1,joueur2};
-		joueur1.conquerir(joueur1.getCouleur(), test);
-		joueur2.conquerir(joueur2.getCouleur(), test);
-		test.afficher();
+		//if (choixAff == 'C'){
+			int nbJoueur = 0;
+			while (nbJoueur<2 || nbJoueur>4){
+				System.out.println("Entrez le nombre de joueurs (entre 2 et 4): ");
+				nbJoueur = scan.nextInt();
+			}
+			Joueur[] liste = new Joueur[nbJoueur];
+			int[][] positionDépart = {{0,0},{tailleX-1,tailleY-1},{0,tailleY-1},{tailleX-1,0}};
+			for (int i=0; i<nbJoueur; i++){
+				liste[i] = new Joueur();
+				creationJoueur(positionDépart[i][0], positionDépart[i][1], liste[i], test);
+				liste[i].conquerir(liste[i].getCouleur(), test);
+			}
+		//} else {
+			PanneauPlateau pan = new PanneauPlateau();
+			Fenetre fen = new Fenetre(pan);
+		//}
+		
+		
+		pan.setListeJoueur(liste);
+		test.afficher(pan, choixAff);
 		
 		boolean partie = true;
 		while (partie){
-			joueur1.jouer(liste, test);
-			for (int i=0; i<liste.length; i++){
-				if(liste[i].getScore() > tailleX*tailleY/2) partie = false;
+			for (int i=0; i<nbJoueur; i++){
+				int scoreTotal = 0;
+				for (int j=0; j<nbJoueur; j++){
+					scoreTotal += liste[j].getScore();
+					if(liste[j].getScore() > tailleX*tailleY/2) partie = false;
+				}
+				if (scoreTotal >= tailleX*tailleY) partie = false;
+				if (partie == false) break;
+				pan.setJoueurActif(i);
+				liste[i].jouer(liste, test, pan, choixAff);
 			}
-			if (partie == false) break;
-			joueur2.jouer(liste, test);
-			for (int i=0; i<liste.length; i++){
-				if(liste[i].getScore() > tailleX*tailleY/2) partie = false;
-			}
-			
 		}
 		afficherScore(liste);
 		//System.exit (0);
 		
 	}
+	
 	
 	
 	public static void afficherScore(Joueur[] listeJ){
@@ -73,11 +93,12 @@ public class Main {
 	}
 	
 	public static void menuPrincipal(){
-		String[] text = {"Nouvelle partie", "Quitter"};
-		double[][] position = {{450,250},{450,400}};
-		Font font = new Font("Cooper Black", Font.BOLD, 60);
-		StdDraw.setFont(font);
-		StdDraw.text(position[0][0], position[0][1], text[0]);
-		StdDraw.text(position[1][0], position[1][1], text[1]);
+		String[] text = {"Nouvelle partie", "Comment jouer", "Quitter"};
+		//double[][] position = {{450,250},{450,400}};
+		//Font font = new Font("Cooper Black", Font.BOLD, 60);
+		//StdDraw.setFont(font);
+		//StdDraw.text(position[0][0], position[0][1], text[0]);
+		//StdDraw.text(position[1][0], position[1][1], text[1]);
 	}
+	
 }
