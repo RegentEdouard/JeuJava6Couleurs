@@ -6,8 +6,8 @@ import javax.swing.JFrame;
 public class Main {
 
 	public static void main(String[] args) {
-		int tailleX = 30;
-		int tailleY = 40;
+		int tailleX = 30;//30
+		int tailleY = 40;//40
 		Plateau test = new Plateau(tailleX, tailleY);
 		//Fenetre fen = new Fenetre();
 		
@@ -56,14 +56,17 @@ public class Main {
 				liste[i].jouer(liste, test, pan, choixAff);
 			}
 		}
-		afficherScore(liste);
+		
+		pan.setFin(true);
+		afficherScore(liste, pan);
+		
 		//System.exit (0);
 		
 	}
 	
 	
 	
-	public static void afficherScore(Joueur[] listeJ){
+	public static void afficherScore(Joueur[] listeJ, PanneauPlateau pan){
 		String[] scoreMax = {"0",""};
 		for (int i=0; i<listeJ.length; ++i){
 			if (Integer.parseInt(scoreMax[0]) < listeJ[i].getScore()){
@@ -72,6 +75,7 @@ public class Main {
 			}
 		}
 		System.out.println(scoreMax[1] + " est vainqueur avec un score de: " + scoreMax[0]);
+		pan.repaint();
 	}
 	
 	public static void creationJoueur(int positionX, int positionY, Joueur j, Plateau p){

@@ -11,7 +11,7 @@ public class Joueur {
 	public int score = 1;
 	public String nom;
 
-	
+
 	public boolean isIa() {
 		return ia;
 	}
@@ -35,7 +35,7 @@ public class Joueur {
 	public void setTerritoire(boolean[][] territoire) {
 		this.territoire = territoire;
 	}
-	
+
 	public int getScore() {
 		return score;
 	}
@@ -43,7 +43,7 @@ public class Joueur {
 	public void setScore(int score) {
 		this.score = score;
 	}
-	
+
 	public String getNom() {
 		return nom;
 	}
@@ -51,8 +51,8 @@ public class Joueur {
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
-	
-	
+
+
 	public void conquerir(char couleur, Plateau p){	//couleur est en majuscule
 		this.couleur = couleur;
 		p.modification(territoire, couleur);
@@ -97,49 +97,50 @@ public class Joueur {
 				}
 			}
 		}
-		
+
 		p.setPlateau(terrain);
 	}
-	
+
 	public void jouer(Joueur[] liste, Plateau p, PanneauPlateau pan, char choix){
 		if (choix == 'C'){
 			Scanner scan = new Scanner(System.in);
-			
+
 			char[] listeCouleur = new char[liste.length];
 			for (int i=0; i<liste.length; i++) listeCouleur[i]=liste[i].getCouleur();	//récupération des couleurs des joueurs adverses
-			
+
 			boolean bonneCouleur = false;
 			char couleur='B';
-			
+
 			while (bonneCouleur == false){
 				bonneCouleur = true;
 				System.out.println("Tour de " + this.couleur);
 				System.out.println("Choisissez une couleur à jouer (initiale en majuscule):");
-				
+
 				couleur = scan.nextLine().charAt(0);		//Retourne le premier caractère
 				for (int i=0; i<listeCouleur.length; i++){
 					if(couleur == listeCouleur[i]) bonneCouleur = false;
 				}
-				
+
 			}
-			
+
 			conquerir(couleur, p);
 			System.out.println("Score de " + this.couleur + ": " + score);
 			p.afficher(pan, choix);
-			
+
 		} else {
 			char[] listeCouleur = new char[liste.length];
 			for (int i=0; i<liste.length; i++) listeCouleur[i]=liste[i].getCouleur();	//récupération des couleurs des joueurs adverses
-			
-			boolean bonneCouleur = false;
-			char couleur='B';
 
-			
+			boolean bonneCouleur = false;
+			char couleur = 'B';
+
+
 			while (bonneCouleur == false){
 				bonneCouleur = false;
 				int X = pan.getSourisX();
 				int Y = pan.getSourisY();
-				
+
+				System.out.println(X + " " + Y);
 				if (362<X && X<383 ){
 					if (660<Y &&Y<681){
 						couleur = 'R';
@@ -149,7 +150,7 @@ public class Joueur {
 							if(couleur == listeCouleur[i]) bonneCouleur = false;
 						}
 					}
-					
+
 				}
 				if (X<414 && X>393 && Y<681 && Y>660){
 					couleur = 'O';
@@ -176,7 +177,7 @@ public class Joueur {
 							if(couleur == listeCouleur[i]) bonneCouleur = false;
 						}
 					}
-					
+
 				}if (X<507 && X>486){
 					if (Y<681 && Y>660){
 						couleur = 'B';
@@ -186,7 +187,7 @@ public class Joueur {
 							if(couleur == listeCouleur[i]) bonneCouleur = false;
 						}
 					}
-					
+
 				}if (X<538 && X>517){
 					if (Y<681 && Y>660){
 						couleur = 'I';
@@ -196,17 +197,18 @@ public class Joueur {
 							if(couleur == listeCouleur[i]) bonneCouleur = false;
 						}
 					}
-					
+
 				}
 			}
-			
+
 			conquerir(couleur, p);
-			System.out.println("Score de " + this.couleur + ": " + score);
 			p.afficher(pan, choix);
+			pan.setSourisX(0);
+			pan.setSourisY(0);
 		}
-		
+
 	}
 
-		
-	
+
+
 }

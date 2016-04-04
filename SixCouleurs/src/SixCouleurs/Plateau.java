@@ -3,7 +3,7 @@ package SixCouleurs;
 public class Plateau {
 	public char[][] plateau;
 
-	
+
 	public char[][] getPlateau() {
 		return plateau;
 	}
@@ -11,8 +11,8 @@ public class Plateau {
 	public void setPlateau(char[][] plateau) {
 		this.plateau = plateau;
 	}
-	
-	
+
+
 	public Plateau(int colonne, int ligne) {
 		char[][] plateau = new char[ligne][colonne];
 		char[] couleur = {'r','o','j','v','b','i'};
@@ -21,7 +21,7 @@ public class Plateau {
 				plateau[i][j] = couleur[alea(0,6)];
 			}
 		}
-		
+
 		//Chaque coin a une couleur différente pour éviter que deux joueurs aient la même couleur
 		while (plateau[ligne-1][colonne-1] == plateau[0][0]){
 			plateau[ligne-1][colonne-1] = couleur[alea(0,6)];
@@ -34,8 +34,8 @@ public class Plateau {
 		}
 		this.plateau = plateau;
 	}
-	
-	
+
+
 	public void afficher(PanneauPlateau pan, char choix){
 		if (choix == 'C'){
 			for (int i=0; i<plateau.length; i++){
@@ -50,7 +50,7 @@ public class Plateau {
 			pan.repaint();
 		}
 	}
-	
+
 	public void modification(boolean[][] territoire, char modif){
 		for (int i=0; i<territoire.length; i++){
 			for (int j=0; j<territoire[0].length; j++){
@@ -58,10 +58,10 @@ public class Plateau {
 			}
 		}
 	}
-	
+
 	public static int alea(int min, int max){
 		int Nb =(int)( min + (Math.random() * (max - min)));
 		return Nb;
 	}
-	
+
 }

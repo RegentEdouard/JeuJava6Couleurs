@@ -9,27 +9,28 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 
 public class PanneauPlateau extends JPanel {
-	
+
 	private char[][] plateau;
 	public Joueur[] listeJoueur;
 	public int joueurActif;
 	public int sourisX = 0;
 	public int sourisY = 0;
-	
+	public boolean fin = false;
+
 	public void paintComponent(Graphics g) {
-		
+
 		// On décide d'une couleur de fond pour notre rectangle
 		g.setColor(Color.white);
 		// On dessine celui-ci afin qu'il prenne tout la surface
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
 		int hauteur = 740-80;	// Hauteur de la fenetre sans les bords
 		int largeur = 900-40;	// Largeur de la fenêtre sans les bords
-		
+
 		//Création de la séparation entre le terrain et les données
 		g.setColor(Color.lightGray);
 		g.fillRect(880, 0, 1, 740);
-		
-		
+
+
 		for (int i=0; i<plateau.length; i++){
 			for (int j=0; j<plateau[0].length; j++){//'r','o','j','v','b','i'
 				switch(plateau[i][j]){
@@ -82,8 +83,8 @@ public class PanneauPlateau extends JPanel {
 				g.setColor(Color.white);
 				g.drawRect(i*largeurCase+20, j*hauteurCase+20, largeurCase, hauteurCase);
 				g.drawRect(i*largeurCase+21, j*hauteurCase+21, largeurCase-2, hauteurCase-2);
-				
-				
+
+
 				//System.out.print(plateau[i][j] + " ");
 			}
 		}
@@ -100,7 +101,7 @@ public class PanneauPlateau extends JPanel {
 		g.fillRect(486, 660, 21, 21);
 		g.setColor(Color.magenta);
 		g.fillRect(517, 660, 21, 21);
-		
+
 		//Afficher les couleurs que l'on ne peut pas utiliser
 		g.setColor(Color.white);
 		for (int i=0; i<listeJoueur.length; i++){
@@ -125,22 +126,29 @@ public class PanneauPlateau extends JPanel {
 				break;
 			}
 		}
-		
+
 		Font font = new Font("Cooper Black", Font.BOLD, 20);
-	    g.setFont(font);
-	    g.setColor(Color.black);
-	    g.drawString("Score:", 930, 80);
-	    for (int i=0; i<listeJoueur.length; i++){
-	    	if (listeJoueur[i].getNom() == null) listeJoueur[i].setNom("Joueur " + (i+1));
-	    	g.drawString(listeJoueur[i].getNom() + ": " + listeJoueur[i].getScore(), 910, 110+i*25);
-	    }
-	    font = new Font("Cooper Black", Font.BOLD, 22);
-	    g.setFont(font);
-	    g.drawString("C'est au tour de ", 910, 260);
-	    g.drawString(listeJoueur[joueurActif].getNom(), 950, 287);
-	    g.drawString("de jouer", 910, 314);
+		g.setFont(font);
+		g.setColor(Color.black);
+		g.drawString("Score:", 930, 80);
+		for (int i=0; i<listeJoueur.length; i++){
+			if (listeJoueur[i].getNom() == null) listeJoueur[i].setNom("Joueur " + (i+1));
+			g.drawString(listeJoueur[i].getNom() + ": " + listeJoueur[i].getScore(), 910, 110+i*25);
+		}
+		font = new Font("Cooper Black", Font.BOLD, 22);
+		g.setFont(font);
+		g.drawString("C'est au tour de ", 910, 260);
+		g.drawString(listeJoueur[joueurActif].getNom(), 950, 287);
+		g.drawString("de jouer", 910, 314);
+		
+		//Affichage du gagnant
+		if (fin){
+			g.drawString("Vainqueur :", 935, 500);
+			g.drawString(listeJoueur[joueurActif].getNom() + " !", 945, 525);
+			g.drawString("Félicitation", 935, 550);
+		}
 	}
-	
+
 	public PanneauPlateau(){
 		this.addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
@@ -192,5 +200,8 @@ public class PanneauPlateau extends JPanel {
 		this.sourisY = sourisY;
 	}
 
-	
+	public void setFin(boolean fin) {
+		this.fin = fin;
+	}
+
 }
