@@ -36,6 +36,7 @@ public class Main {
 		//} else {
 			PanneauPlateau pan = new PanneauPlateau();
 			Fenetre fen = new Fenetre(pan);
+			
 		//}
 		
 		

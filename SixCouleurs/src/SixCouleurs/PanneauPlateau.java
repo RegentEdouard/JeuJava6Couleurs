@@ -8,14 +8,17 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 
-public class PanneauPlateau extends JPanel {
+public class PanneauPlateau extends JPanel  {
 
 	private char[][] plateau;
 	public Joueur[] listeJoueur;
 	public int joueurActif;
-	public int sourisX = 0;
-	public int sourisY = 0;
 	public boolean fin = false;
+	public int posCliqueX = 0;
+	public int posCliqueY = 0;
+	public int posSourisX = 0;
+	public int posSourisY = 0;
+	public char couleurSouris;
 
 	public void paintComponent(Graphics g) {
 
@@ -31,9 +34,10 @@ public class PanneauPlateau extends JPanel {
 		g.fillRect(880, 0, 1, 740);
 
 
+		//Affichage du plateau
 		for (int i=0; i<plateau.length; i++){
-			for (int j=0; j<plateau[0].length; j++){//'r','o','j','v','b','i'
-				switch(plateau[i][j]){
+			for (int j=0; j<plateau[0].length; j++){	//'r','o','j','v','b','i'
+				switch(plateau[i][j]){					//Sélection des couleurs
 				case 'r':
 					g.setColor(Color.red);
 					break;
@@ -73,6 +77,7 @@ public class PanneauPlateau extends JPanel {
 					g.setColor(Color.magenta);
 					break;
 				}
+				//Création des carrés
 				int largeurCase = largeur/plateau.length;
 				int hauteurCase = hauteur/plateau[0].length;
 				largeurCase = Math.min(largeurCase, hauteurCase);
@@ -88,19 +93,26 @@ public class PanneauPlateau extends JPanel {
 				//System.out.print(plateau[i][j] + " ");
 			}
 		}
-		//Affichage de la sélection de couleur
+
 		g.setColor(Color.red);
-		g.fillRect(362, 660, 21, 21);
+		if (couleurSouris == 'R') g.fillRect(361, 659, 23, 23);	//Affiche la couleur survollée
+		else g.fillRect(362, 660, 21, 21);						//Affichage de la sélection de couleur
 		g.setColor(new Color(255, 106, 0));	//Orange
-		g.fillRect(393, 660, 21, 21);
+		if (couleurSouris == 'O') g.fillRect(392, 659, 23, 23);	//Affiche la couleur survollée
+		else g.fillRect(393, 660, 21, 21);						//Affichage de la sélection de couleur
 		g.setColor(Color.yellow);
-		g.fillRect(424, 660, 21, 21);
+		if (couleurSouris == 'J')g.fillRect(423, 659, 23, 23);	//Affiche la couleur survollée
+		else g.fillRect(424, 660, 21, 21);						//Affichage de la sélection de couleur
 		g.setColor(Color.green);
-		g.fillRect(455, 660, 21, 21);
+		if (couleurSouris == 'V')g.fillRect(454, 659, 23, 23);	//Affiche la couleur survollée
+		else g.fillRect(455, 660, 21, 21);						//Affichage de la sélection de couleur
 		g.setColor(Color.blue);
-		g.fillRect(486, 660, 21, 21);
+		if (couleurSouris == 'B')g.fillRect(485, 659, 23, 23);	//Affiche la couleur survollée
+		else g.fillRect(486, 660, 21, 21);						//Affichage de la sélection de couleur
 		g.setColor(Color.magenta);
-		g.fillRect(517, 660, 21, 21);
+		if (couleurSouris == 'I')g.fillRect(516, 659, 23, 23);	//Affiche la couleur survollée
+		else g.fillRect(517, 660, 21, 21);						//Affichage de la sélection de couleur
+
 
 		//Afficher les couleurs que l'on ne peut pas utiliser
 		g.setColor(Color.white);
@@ -152,12 +164,19 @@ public class PanneauPlateau extends JPanel {
 	public PanneauPlateau(){
 		this.addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
-				System.out.print("X = " + e.getX() + ", Y = " + e.getY());
-				sourisX = e.getX();
-				sourisY = e.getY();
-				System.out.println("; X = " + sourisX + ", Y = " + sourisY);
+				posCliqueX = e.getX();
+				posCliqueY = e.getY();
 			}
 		});
+		
+		this.addMouseMotionListener(new MouseAdapter(){
+			public void mouseMoved(MouseEvent e){
+				posSourisX = e.getX();
+				posSourisY = e.getY();
+			}
+		});
+		
+		//System.out.println(MouseInfo.getPointerInfo().getLocation());
 	}
 
 	public char[][] getPlateau() {
@@ -184,24 +203,50 @@ public class PanneauPlateau extends JPanel {
 		this.joueurActif = joueurActif;
 	}
 
-	public int getSourisX() {
-		return sourisX;
-	}
-
-	public void setSourisX(int sourisX) {
-		this.sourisX = sourisX;
-	}
-
-	public int getSourisY() {
-		return sourisY;
-	}
-
-	public void setSourisY(int sourisY) {
-		this.sourisY = sourisY;
-	}
-
 	public void setFin(boolean fin) {
 		this.fin = fin;
 	}
+
+	public int getPosSourisX() {
+		return posSourisX;
+	}
+
+	public void setPosSourisX(int posSourisX) {
+		this.posSourisX = posSourisX;
+	}
+
+	public int getPosSourisY() {
+		return posSourisY;
+	}
+
+	public void setPosSourisY(int posSourisY) {
+		this.posSourisY = posSourisY;
+	}
+
+	public char getCouleurSouris() {
+		return couleurSouris;
+	}
+
+	public void setCouleurSouris(char couleurSouris) {
+		this.couleurSouris = couleurSouris;
+	}
+
+	public int getPosCliqueX() {
+		return posCliqueX;
+	}
+
+	public void setPosCliqueX(int posCliqueX) {
+		this.posCliqueX = posCliqueX;
+	}
+
+	public int getPosCliqueY() {
+		return posCliqueY;
+	}
+
+	public void setPosCliqueY(int posCliqueY) {
+		this.posCliqueY = posCliqueY;
+	}
+
+
 
 }

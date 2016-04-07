@@ -1,6 +1,5 @@
 package SixCouleurs;
 
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Scanner;
 
@@ -109,7 +108,7 @@ public class Joueur {
 			for (int i=0; i<liste.length; i++) listeCouleur[i]=liste[i].getCouleur();	//récupération des couleurs des joueurs adverses
 
 			boolean bonneCouleur = false;
-			char couleur='B';
+			char couleur='A';
 
 			while (bonneCouleur == false){
 				bonneCouleur = true;
@@ -129,86 +128,107 @@ public class Joueur {
 
 		} else {
 			char[] listeCouleur = new char[liste.length];
-			for (int i=0; i<liste.length; i++) listeCouleur[i]=liste[i].getCouleur();	//récupération des couleurs des joueurs adverses
-
+			for (int i=0; i<liste.length; i++) listeCouleur[i]=liste[i].getCouleur();	//Récupération des couleurs des joueurs adverses
+			char[] listeCouleurJouable = tabCouleurJouable(listeCouleur);	//Création de la liste des couleurs jouables
+			int[][] tabCoordonnees = tabCoordonnees(listeCouleurJouable);	//Création de la liste de leurs coordonnées
+			
+			
 			boolean bonneCouleur = false;
-			char couleur = 'B';
+			char couleur = 'A';
 
 
-			while (bonneCouleur == false){
-				bonneCouleur = false;
-				int X = pan.getSourisX();
-				int Y = pan.getSourisY();
-
-				System.out.println(X + " " + Y);
-				if (362<X && X<383 ){
-					if (660<Y &&Y<681){
-						couleur = 'R';
-						bonneCouleur = true;
-						System.out.println(couleur);
-						for (int i=0; i<listeCouleur.length; i++){
-							if(couleur == listeCouleur[i]) bonneCouleur = false;
-						}
-					}
-
-				}
-				if (X<414 && X>393 && Y<681 && Y>660){
-					couleur = 'O';
-					bonneCouleur = true;
-					System.out.println(couleur);
-					for (int i=0; i<listeCouleur.length; i++){
-						if(couleur == listeCouleur[i]) bonneCouleur = false;
-					}
-				}
-				if (X<445 && X>424 && Y<681 && Y>660){
-					couleur = 'J';
-					bonneCouleur = true;
-					System.out.println(couleur);
-					for (int i=0; i<listeCouleur.length; i++){
-						if(couleur == listeCouleur[i]) bonneCouleur = false;
-					}
-				}
-				if (X<476 && X>455){
-					if (Y<681 && Y>660){
-						couleur = 'V';
-						bonneCouleur = true;
-						System.out.println(couleur);
-						for (int i=0; i<listeCouleur.length; i++){
-							if(couleur == listeCouleur[i]) bonneCouleur = false;
-						}
-					}
-
-				}if (X<507 && X>486){
-					if (Y<681 && Y>660){
-						couleur = 'B';
-						bonneCouleur = true;
-						System.out.println(couleur);
-						for (int i=0; i<listeCouleur.length; i++){
-							if(couleur == listeCouleur[i]) bonneCouleur = false;
-						}
-					}
-
-				}if (X<538 && X>517){
-					if (Y<681 && Y>660){
-						couleur = 'I';
-						bonneCouleur = true;
-						System.out.println(couleur);
-						for (int i=0; i<listeCouleur.length; i++){
-							if(couleur == listeCouleur[i]) bonneCouleur = false;
-						}
-					}
-
-				}
+			while (couleur == 'A'){
+				couleur = testCouleurGraphique(pan, bonneCouleur, listeCouleurJouable, tabCoordonnees, couleur);
 			}
-
+			pan.setPosCliqueX(0);
+			pan.setPosCliqueY(0);
+			System.out.println(couleur);
 			conquerir(couleur, p);
 			p.afficher(pan, choix);
-			pan.setSourisX(0);
-			pan.setSourisY(0);
+			
 		}
 
 	}
 
+	public char testCouleurGraphique(PanneauPlateau pan, boolean bonneCouleur, 
+			char[] listeCouleurJouable, int[][] tabCoordonnees, char couleur){
+		bonneCouleur = false;
+		int X = pan.getPosSourisX();
+		int Y = pan.getPosSourisY();
+		pan.setCouleurSouris('A');
+		couleur = 'A';
+		
+		for (int i=0; i<listeCouleurJouable.length; i++){
+			X = pan.getPosSourisX();
+			if (tabCoordonnees[i][0]<X && X<tabCoordonnees[i][1]){
+				Y = pan.getPosSourisY();
+				if (tabCoordonnees[i][2]<Y && Y<tabCoordonnees[i][3]){
+					pan.setCouleurSouris(listeCouleurJouable[i]);
+					if(pan.getPosCliqueX() == X && pan.getPosCliqueY() == Y) couleur = listeCouleurJouable[i];;
+				}
+			}
+			
+		}
+		pan.repaint();
+		return couleur;
+	}
 
+	private char[] tabCouleurJouable(char[] listeCouleur){
+		char[] listeCouleurJouable = new char[6 - listeCouleur.length];
+		int indiceTab = 0;
+		char[] couleur = {'R','O','J','V','B','I'};
+		boolean couleurOk = false;
+		for (int i=0; i<6; i++){
+			couleurOk = true;
+			for (int j=0; j<listeCouleur.length; j++){
+				if (listeCouleur[j] == couleur[i]){
+					couleurOk = false;
+					break;
+				}
+			}
+			if (couleurOk){
+				listeCouleurJouable[indiceTab] = couleur[i];
+				indiceTab ++;
+			}
+		}
+		return listeCouleurJouable;
+	}
+	
+	private int[][] tabCoordonnees(char[] listeCouleur){
+		int[][] tabCoordonnees = new int[listeCouleur.length][4];
+		//'r','o','j','v','b','i'
 
+		
+		for (int i=0; i<listeCouleur.length; i++){
+			tabCoordonnees[i][2] = 660;
+			tabCoordonnees[i][3] = 681;
+			switch(listeCouleur[i]){
+			case 'R':
+				tabCoordonnees[i][0] = 362;
+				tabCoordonnees[i][1] = 383;
+				break;
+			case 'O':
+				tabCoordonnees[i][0] = 393;
+				tabCoordonnees[i][1] = 414;
+				break;
+			case 'J':
+				tabCoordonnees[i][0] = 424;
+				tabCoordonnees[i][1] = 445;
+				break;
+			case 'V':
+				tabCoordonnees[i][0] = 455;
+				tabCoordonnees[i][1] = 476;
+				break;
+			case 'B':
+				tabCoordonnees[i][0] = 486;
+				tabCoordonnees[i][1] = 507;
+				break;
+			case 'I':
+				tabCoordonnees[i][0] = 517;
+				tabCoordonnees[i][1] = 538;
+				break;
+			}
+		}
+		return tabCoordonnees;
+	}
 }
