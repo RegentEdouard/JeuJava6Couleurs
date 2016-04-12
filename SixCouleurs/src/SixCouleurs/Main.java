@@ -1,6 +1,7 @@
 package SixCouleurs;
 
 import java.util.Scanner;
+
 import javax.swing.JFrame;
 
 public class Main {
@@ -35,13 +36,16 @@ public class Main {
 			}
 		//} else {
 			PanneauPlateau pan = new PanneauPlateau();
-			Fenetre fen = new Fenetre(pan);
+			Fenetre fen = new Fenetre(pan);	//1150 * 740
 			
 		//}
 		
 		
 		pan.setListeJoueur(liste);
 		test.afficher(pan, choixAff);
+
+
+		menuPrincipal(fen);
 		
 		boolean partie = true;
 		while (partie){
@@ -97,13 +101,69 @@ public class Main {
 		return tab;
 	}
 	
-	public static void menuPrincipal(){
-		String[] text = {"Nouvelle partie", "Comment jouer", "Quitter"};
-		//double[][] position = {{450,250},{450,400}};
-		//Font font = new Font("Cooper Black", Font.BOLD, 60);
-		//StdDraw.setFont(font);
-		//StdDraw.text(position[0][0], position[0][1], text[0]);
-		//StdDraw.text(position[1][0], position[1][1], text[1]);
+	public static void menuPrincipal(Fenetre fen){
+		PanneauMenuPrincipal menuPrincipal = new PanneauMenuPrincipal();
+		String[] textMenu = {"Jouer","Jouer en réseau","Règles","Scores","Quitter"};
+		int[][] posMenu = {{525,300},{440,375},{521,450},{520,525},{511,600}};
+		menuPrincipal.setText(textMenu);
+		menuPrincipal.setPosition(posMenu);
+		menuPrincipal.logo();
+		fen.setContentPane(menuPrincipal);
+		fen.repaint();
+		fen.revalidate();
+		boolean menu = true;
+		while (menu){
+			fen.repaint();
+			String resultatClique = menuPrincipal.souris();
+			switch(resultatClique){
+			case "Jouer":
+				menuJouer(fen);
+				menu = false;
+				break;
+			case "Jouer en réseau":
+				break;
+			case "Règles":
+				break;
+			case "Scores":
+				break;
+			case "Quitter":
+				fen.dispose();
+				System.exit(0);
+				break;
+			case " ":
+				break;
+			}
+		}
 	}
 	
+	public static void menuJouer(Fenetre fen){
+		PanMenuJouer menuJouer = new PanMenuJouer();
+		String[] textMenu = {"Retour","Charger un terrain","Charger une partie","Suivant"};
+		int[][] posMenu = {{10,40},{440,375},{521,450},{520,525}};
+		menuJouer.setText(textMenu);
+		menuJouer.setPosition(posMenu);
+		fen.setContentPane(menuJouer);
+		fen.repaint();
+		fen.revalidate();
+		boolean menu = true;
+		while (menu){
+			fen.repaint();
+			String resultatClique = menuJouer.souris();
+			switch(resultatClique){
+			case "Retour":
+				menuPrincipal(fen);
+				menu = false;
+				break;
+			case "Charger un terrain":
+				break;
+			case "Charger une partie":
+				break;
+			case "Suivant":
+				break;
+			case " ":
+				break;
+			}
+			
+		}
+	}
 }

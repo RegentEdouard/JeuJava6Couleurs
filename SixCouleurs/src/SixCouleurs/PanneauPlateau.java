@@ -53,10 +53,10 @@ public class PanneauPlateau extends JPanel  {
 					//g.setColor(Color.orange);
 					break;
 				case 'j':
-					g.setColor(Color.yellow);
+					g.setColor(new Color(255, 216, 0));	//Jaune
 					break;
 				case 'J':
-					g.setColor(Color.yellow);
+					g.setColor(new Color(255, 216, 0));	//Jaune
 					break;
 				case 'v':
 					g.setColor(Color.green);
@@ -100,7 +100,7 @@ public class PanneauPlateau extends JPanel  {
 		g.setColor(new Color(255, 106, 0));	//Orange
 		if (couleurSouris == 'O') g.fillRect(392, 659, 23, 23);	//Affiche la couleur survollée
 		else g.fillRect(393, 660, 21, 21);						//Affichage de la sélection de couleur
-		g.setColor(Color.yellow);
+		g.setColor(new Color(255, 216, 0));	//Jaune
 		if (couleurSouris == 'J')g.fillRect(423, 659, 23, 23);	//Affiche la couleur survollée
 		else g.fillRect(424, 660, 21, 21);						//Affichage de la sélection de couleur
 		g.setColor(Color.green);
@@ -115,33 +115,34 @@ public class PanneauPlateau extends JPanel  {
 
 
 		//Afficher les couleurs que l'on ne peut pas utiliser
-		g.setColor(Color.white);
+		//g.setColor(Color.white);
 		for (int i=0; i<listeJoueur.length; i++){
 			switch(listeJoueur[i].getCouleur()){
 			case 'R':
-				g.fillRect(365, 663, 15, 15);
+				g.clearRect(365, 663, 15, 15);
 				break;
 			case 'O':
-				g.fillRect(396, 663, 15, 15);
+				g.clearRect(396, 663, 15, 15);
 				break;
 			case 'J':
-				g.fillRect(427, 663, 15, 15);
+				g.clearRect(427, 663, 15, 15);
 				break;
 			case 'V':
-				g.fillRect(458, 663, 15, 15);
+				g.clearRect(458, 663, 15, 15);
 				break;
 			case 'B':
-				g.fillRect(489, 663, 15, 15);
+				g.clearRect(489, 663, 15, 15);
 				break;
 			case 'I':
-				g.fillRect(520, 663, 15, 15);
+				g.clearRect(520, 663, 15, 15);
 				break;
 			}
 		}
 
+		//Affichage de la partie information de droite
 		Font font = new Font("Cooper Black", Font.BOLD, 20);
 		g.setFont(font);
-		g.setColor(Color.black);
+		g.setColor(new Color(62, 67, 94));
 		g.drawString("Score:", 930, 80);
 		for (int i=0; i<listeJoueur.length; i++){
 			if (listeJoueur[i].getNom() == null) listeJoueur[i].setNom("Joueur " + (i+1));
