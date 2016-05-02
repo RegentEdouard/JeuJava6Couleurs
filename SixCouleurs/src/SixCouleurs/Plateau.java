@@ -1,8 +1,13 @@
 package SixCouleurs;
 
-public class Plateau {
-	public char[][] plateau;
+import java.util.Scanner;
 
+public class Plateau {
+	private char[][] plateau;
+	private Joueur[] listeJoueurs;
+	private PanneauPlateau panneau;
+	private char choixAffichage;
+	
 
 	public char[][] getPlateau() {
 		return plateau;
@@ -12,8 +17,32 @@ public class Plateau {
 		this.plateau = plateau;
 	}
 
+	public char getChoixAffichage() {
+		return choixAffichage;
+	}
 
-	public Plateau(int colonne, int ligne) {
+	public void setChoixAffichage(char choixAffichage) {
+		this.choixAffichage = choixAffichage;
+	}
+
+	public Joueur[] getListeJoueurs() {
+		return listeJoueurs;
+	}
+
+	public void setListeJoueurs(Joueur[] listeJoueurs) {
+		this.listeJoueurs = listeJoueurs;
+	}
+
+	public PanneauPlateau getPanneau() {
+		return panneau;
+	}
+
+	public void setPanneau(PanneauPlateau panneau) {
+		this.panneau = panneau;
+	}
+
+
+	public void initPlateau(int colonne, int ligne) {
 		char[][] plateau = new char[ligne][colonne];
 		char[] couleur = {'r','o','j','v','b','i'};
 		for (int i=0; i<ligne; i++){
@@ -36,8 +65,8 @@ public class Plateau {
 	}
 
 
-	public void afficher(PanneauPlateau pan, char choix){
-		if (choix == 'C'){
+	public void afficher(){
+		if (choixAffichage == 'C'){
 			for (int i=0; i<plateau.length; i++){
 				System.out.print("| ");
 				for (int j=0; j<plateau[0].length; j++){
@@ -46,10 +75,12 @@ public class Plateau {
 				System.out.println("");
 			}
 		} else {
-			pan.setPlateau(plateau);
-			pan.repaint();
+			panneau.setPlateau(plateau);
+			panneau.repaint();
 		}
+		
 	}
+	
 
 	public void modification(boolean[][] territoire, char modif){
 		for (int i=0; i<territoire.length; i++){
@@ -63,5 +94,96 @@ public class Plateau {
 		int Nb =(int)( min + (Math.random() * (max - min)));
 		return Nb;
 	}
+	
+	public void afficherScore(Joueur[] listeJ){
+		String[] scoreMax = {"0",""};
+		for (int i=0; i<listeJ.length; ++i){
+			if (Integer.parseInt(scoreMax[0]) < listeJ[i].getScore()){
+				scoreMax[0] = Integer.toString(listeJ[i].getScore());
+				scoreMax[1] = Character.toString(listeJ[i].getCouleur());
+			}
+		}
+		System.out.println(scoreMax[1] + " est vainqueur avec un score de: " + scoreMax[0]);
+		if (choixAffichage == 'G') panneau.repaint();
+		while (true){
+			
+		}
+	}
+	
+	public void creationJoueur(int positionX, int positionY, Joueur j){
+		char[][] terrain = plateau;
+		terrain[positionY][positionX] = (char)((int)plateau[positionY][positionX]-32);	//Passage de la case en majuscule
+		plateau = terrain;
+		j.setTerritoire(tabDebut(positionX, positionY, new boolean[terrain.length][terrain[0].length]));
+		j.setCouleur(terrain[positionY][positionX]);
+	}
+	
+	public static boolean[][] tabDebut(int x, int y, boolean[][] tab){	//Retourne un tableau de territoire
+		for (int i=0; i<tab.length; i++){
+			for (int j=0; j<tab[0].length; j++){
+				tab[i][j] = false;
+			}
+		}
+		tab[y][x] = true;
+		return tab;
+	}
+
+	public void debutPartie(){
+		if (choixAffichage == 'C'){
+			Scanner scan = new Scanner(System.in);
+			int tailleX = 0;//30
+			int tailleY = 0;//40
+			while (tailleX<5 || tailleX>30){
+				System.out.println("Entrez la hauteur du plateau (entre 5 et 30): ");
+				tailleX = scan.nextInt();
+			}
+			while (tailleY<5 || tailleY>40){
+				System.out.println("Entrez la largeur du plateau (entre 5 et 40): ");
+				tailleY = scan.nextInt();
+			}
+			initPlateau(tailleX, tailleY);
+			int nbJoueur = 0;
+			while (nbJoueur<2 || nbJoueur>4){
+				System.out.println("Entrez le nombre de joueurs (entre 2 et 4): ");
+				nbJoueur = scan.nextInt();
+			}
+			listeJoueurs = new Joueur[nbJoueur];
+			int[][] positionDépart = {{0,0},{tailleX-1,tailleY-1},{0,tailleY-1},{tailleX-1,0}};
+			for (int i=0; i<nbJoueur; i++){
+				listeJoueurs[i] = new Joueur();
+				creationJoueur(positionDépart[i][0], positionDépart[i][1], listeJoueurs[i]);
+				listeJoueurs[i].conquerir(listeJoueurs[i].getCouleur(), this);
+			}
+			afficher();
+		} else {
+			PanneauPlateau nouveauPanneau = new PanneauPlateau();
+			Fenetre fen = new Fenetre(nouveauPanneau);	//1150 * 740
+
+			PanneauMenuPrincipal menuPrincipal = new PanneauMenuPrincipal();
+			menuPrincipal.menu(fen);
+		}
+
+	}
+	
+	public void partie(){
+		boolean partie = true;
+		while (partie){
+			for (int i=0; i<listeJoueurs.length; i++){
+				int scoreTotal = 0;
+				for (int j=0; j<listeJoueurs.length; j++){
+					scoreTotal += listeJoueurs[j].getScore();
+					if(listeJoueurs[j].getScore() > plateau.length*plateau[0].length/2) partie = false;
+				}
+				if (scoreTotal >= plateau.length*plateau[0].length) partie = false;
+				if (partie == false) break;
+				if (choixAffichage == 'G') panneau.setJoueurActif(i);
+				listeJoueurs[i].jouer(listeJoueurs, this, panneau, choixAffichage);
+			}
+		}
+		
+		if (choixAffichage == 'G') panneau.setFin(true);
+		afficherScore(listeJoueurs);
+	}
+
 
 }

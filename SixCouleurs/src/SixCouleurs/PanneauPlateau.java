@@ -35,6 +35,8 @@ public class PanneauPlateau extends JPanel  {
 
 
 		//Affichage du plateau
+		//TODO réadapter la taille du terrain
+		//TODO ajouter la couleur noir
 		for (int i=0; i<plateau.length; i++){
 			for (int j=0; j<plateau[0].length; j++){	//'r','o','j','v','b','i'
 				switch(plateau[i][j]){					//Sélection des couleurs
@@ -115,7 +117,6 @@ public class PanneauPlateau extends JPanel  {
 
 
 		//Afficher les couleurs que l'on ne peut pas utiliser
-		//g.setColor(Color.white);
 		for (int i=0; i<listeJoueur.length; i++){
 			switch(listeJoueur[i].getCouleur()){
 			case 'R':
@@ -145,7 +146,7 @@ public class PanneauPlateau extends JPanel  {
 		g.setColor(new Color(62, 67, 94));
 		g.drawString("Score:", 930, 80);
 		for (int i=0; i<listeJoueur.length; i++){
-			if (listeJoueur[i].getNom() == null) listeJoueur[i].setNom("Joueur " + (i+1));
+			if (listeJoueur[i].getNom() == null || listeJoueur[i].getNom() == "      ") listeJoueur[i].setNom("Joueur " + (i+1));
 			g.drawString(listeJoueur[i].getNom() + ": " + listeJoueur[i].getScore(), 910, 110+i*25);
 		}
 		font = new Font("Cooper Black", Font.BOLD, 22);

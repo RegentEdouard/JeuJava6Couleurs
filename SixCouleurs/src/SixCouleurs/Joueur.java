@@ -1,23 +1,13 @@
 package SixCouleurs;
 
-import java.awt.event.MouseEvent;
 import java.util.Scanner;
 
 public class Joueur {
-	public boolean ia = false;
-	public char couleur;
-	public boolean[][] territoire;
-	public int score = 1;
-	public String nom;
+	protected char couleur;
+	protected boolean[][] territoire;
+	protected int score = 1;
+	protected String nom;
 
-
-	public boolean isIa() {
-		return ia;
-	}
-
-	public void setIa(boolean ia) {
-		this.ia = ia;
-	}
 
 	public char getCouleur() {
 		return couleur;
@@ -101,14 +91,15 @@ public class Joueur {
 	}
 
 	public void jouer(Joueur[] liste, Plateau p, PanneauPlateau pan, char choix){
+		char[] listeCouleur = new char[liste.length];
+		for (int i=0; i<liste.length; i++) listeCouleur[i]=liste[i].getCouleur();	//récupération des couleurs des joueurs adverses
+		boolean bonneCouleur = false;
+		char couleur='A';
+
 		if (choix == 'C'){
 			Scanner scan = new Scanner(System.in);
 
-			char[] listeCouleur = new char[liste.length];
-			for (int i=0; i<liste.length; i++) listeCouleur[i]=liste[i].getCouleur();	//récupération des couleurs des joueurs adverses
-
-			boolean bonneCouleur = false;
-			char couleur='A';
+			
 
 			while (bonneCouleur == false){
 				bonneCouleur = true;
@@ -122,19 +113,12 @@ public class Joueur {
 
 			}
 
-			conquerir(couleur, p);
 			System.out.println("Score de " + this.couleur + ": " + score);
-			p.afficher(pan, choix);
 
 		} else {
-			char[] listeCouleur = new char[liste.length];
-			for (int i=0; i<liste.length; i++) listeCouleur[i]=liste[i].getCouleur();	//Récupération des couleurs des joueurs adverses
 			char[] listeCouleurJouable = tabCouleurJouable(listeCouleur);	//Création de la liste des couleurs jouables
 			int[][] tabCoordonnees = tabCoordonnees(listeCouleurJouable);	//Création de la liste de leurs coordonnées
-			
-			
-			boolean bonneCouleur = false;
-			char couleur = 'A';
+
 
 
 			while (couleur == 'A'){
@@ -143,10 +127,10 @@ public class Joueur {
 			pan.setPosCliqueX(0);
 			pan.setPosCliqueY(0);
 			System.out.println(couleur);
-			conquerir(couleur, p);
-			p.afficher(pan, choix);
 			
 		}
+		conquerir(couleur, p);
+		p.afficher();
 
 	}
 
@@ -173,7 +157,7 @@ public class Joueur {
 		return couleur;
 	}
 
-	private char[] tabCouleurJouable(char[] listeCouleur){
+	protected char[] tabCouleurJouable(char[] listeCouleur){
 		char[] listeCouleurJouable = new char[6 - listeCouleur.length];
 		int indiceTab = 0;
 		char[] couleur = {'R','O','J','V','B','I'};
@@ -194,7 +178,7 @@ public class Joueur {
 		return listeCouleurJouable;
 	}
 	
-	private int[][] tabCoordonnees(char[] listeCouleur){
+	protected int[][] tabCoordonnees(char[] listeCouleur){
 		int[][] tabCoordonnees = new int[listeCouleur.length][4];
 		//'r','o','j','v','b','i'
 
