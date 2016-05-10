@@ -1,6 +1,10 @@
 package SixCouleurs;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.util.Scanner;
+
+import javax.swing.JOptionPane;
 
 public class Joueur {
 	protected char couleur;
@@ -45,8 +49,8 @@ public class Joueur {
 	public void conquerir(char couleur, Plateau p){	//couleur est en majuscule
 		this.couleur = couleur;
 		p.modification(territoire, couleur);
-		boolean fin = false;	//vérifie s'il y a eu des modifications sur le terrain
-		char[][] terrain = p.getPlateau();	//récupération
+		boolean fin = false;	//vÃ©rifie s'il y a eu des modifications sur le terrain
+		char[][] terrain = p.getPlateau();	//rÃ©cupÃ©ration
 		while (fin == false){
 			fin = true;
 			for (int i=0; i<terrain.length; i++){
@@ -92,7 +96,7 @@ public class Joueur {
 
 	public void jouer(Joueur[] liste, Plateau p, PanneauPlateau pan, char choix){
 		char[] listeCouleur = new char[liste.length];
-		for (int i=0; i<liste.length; i++) listeCouleur[i]=liste[i].getCouleur();	//récupération des couleurs des joueurs adverses
+		for (int i=0; i<liste.length; i++) listeCouleur[i]=liste[i].getCouleur();	//rÃ©cupÃ©ration des couleurs des joueurs adverses
 		boolean bonneCouleur = false;
 		char couleur='A';
 
@@ -104,9 +108,9 @@ public class Joueur {
 			while (bonneCouleur == false){
 				bonneCouleur = true;
 				System.out.println("Tour de " + this.couleur);
-				System.out.println("Choisissez une couleur à jouer (initiale en majuscule):");
+				System.out.println("Choisissez une couleur Ã  jouer (initiale en majuscule):");
 
-				couleur = scan.nextLine().charAt(0);		//Retourne le premier caractère
+				couleur = scan.nextLine().charAt(0);		//Retourne le premier caractÃ¨re
 				for (int i=0; i<listeCouleur.length; i++){
 					if(couleur == listeCouleur[i]) bonneCouleur = false;
 				}
@@ -116,13 +120,14 @@ public class Joueur {
 			System.out.println("Score de " + this.couleur + ": " + score);
 
 		} else {
-			char[] listeCouleurJouable = tabCouleurJouable(listeCouleur);	//Création de la liste des couleurs jouables
-			int[][] tabCoordonnees = tabCoordonnees(listeCouleurJouable);	//Création de la liste de leurs coordonnées
+			char[] listeCouleurJouable = tabCouleurJouable(listeCouleur);	//CrÃ©ation de la liste des couleurs jouables
+			int[][] tabCoordonnees = tabCoordonnees(listeCouleurJouable);	//CrÃ©ation de la liste de leurs coordonnÃ©es
 
 
 
 			while (couleur == 'A'){
 				couleur = testCouleurGraphique(pan, bonneCouleur, listeCouleurJouable, tabCoordonnees, couleur);
+				cliqueBoutonSauvegarder(liste, pan);
 			}
 			pan.setPosCliqueX(0);
 			pan.setPosCliqueY(0);
@@ -148,7 +153,7 @@ public class Joueur {
 				Y = pan.getPosSourisY();
 				if (tabCoordonnees[i][2]<Y && Y<tabCoordonnees[i][3]){
 					pan.setCouleurSouris(listeCouleurJouable[i]);
-					if(pan.getPosCliqueX() == X && pan.getPosCliqueY() == Y) couleur = listeCouleurJouable[i];;
+					if(pan.getPosCliqueX() == X && pan.getPosCliqueY() == Y) couleur = listeCouleurJouable[i];
 				}
 			}
 			
@@ -215,4 +220,57 @@ public class Joueur {
 		}
 		return tabCoordonnees;
 	}
+	
+	private void cliqueBoutonSauvegarder(Joueur[] liste, PanneauPlateau pan){
+		int X = pan.getPosCliqueX();
+		int Y = pan.getPosCliqueY();
+
+		if (935<X && X<943+153){
+			if (657<Y && Y<689){
+				EditeurFichier editFichier = new EditeurFichier();
+				String nomFichier = editFichier.fenetreSauvegarder();
+				if (nomFichier.equals("")) System.out.println("Pas d'entrÃ©e");
+				else {
+					if (editFichier.existanceFichierDossier("Sauvegardes", nomFichier + ".txt")){
+						boolean choix = editFichier.fenetreBouton();
+						if (choix){
+							String[] fichierSauvegarde = adapterSauvegardeString(pan);
+							String informations = nom + "\u00A0";			//nom du joueur jouant son tour
+							for (int i=0; i<liste.length; i++){			//Liste de tous les joueurs
+								informations = informations + liste[i].getNom() + "\u00A0" + liste[i].getCouleur() + "\u00A0";
+							}
+							
+							editFichier.ecriture(informations, fichierSauvegarde, "Sauvegardes" + nomFichier);
+						}
+					}else {
+						String[] fichierSauvegarde = adapterSauvegardeString(pan);
+						String informations = nom + "â‰¡";			//nom du joueur jouant son tour
+						for (int i=0; i<liste.length; i++){			//Liste de tous les joueurs
+							informations = informations + liste[i].getNom() + "â€¼" + liste[i].getCouleur() + "â‰¡";
+						}
+						
+						editFichier.ecriture(informations, fichierSauvegarde, "Sauvegardes" + nomFichier);
+					}
+					
+				}
+				
+				pan.setPosCliqueX(0);
+				pan.setPosCliqueY(0);
+			}
+		}
+		
+	}
+
+	private String[] adapterSauvegardeString(PanneauPlateau pan){
+		//TODO rÃ©Ã©crire le tableau du terrain
+		char[][] terrain = pan.getPlateau();
+		String[] listeTableau = new String[terrain.length];
+		for (int i=0; i<listeTableau.length; i++){
+			for (int j=0; j<terrain[0].length; j++){
+				listeTableau[i] = listeTableau[i] + terrain[i][j] + "â‰¡";
+			}
+		}
+		return listeTableau;
+	}
+
 }

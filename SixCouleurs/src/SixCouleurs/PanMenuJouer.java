@@ -10,7 +10,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 	private int nbJoueur = 2;
 	private int largeurTerrain = 15;
 	private int hauteurTerrain = 15;
-	private String formeCase = "carré";
+	private String formeCase = "carrï¿½";
 	private boolean obstacles = false;
 	private boolean priseTerritoireAuto = false;
 	private String[] listeNomJoueur = {"      ", "      ", "      ", "      "};
@@ -49,7 +49,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 			}
 		}
 		if (page1){
-			//Texte de la page n°1
+			//Texte de la page nï¿½1
 			g.drawString("Nombre de joueurs:", 300, 140);
 			g.drawString(Integer.toString(nbJoueur), 685, 140);
 			g.drawString("Taille du terrain:", 300, 230);
@@ -60,8 +60,8 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 			g.drawString("Formes des cases:", 300, 360);
 			g.drawString("Obstacles", 300, 450);
 			g.drawString("Prise automatique", 300, 540);
-			if (obstacles) g.fillRect(484, 450-30+5, 33, 31);			//Bouton obstacle cliqué
-			if (priseTerritoireAuto) g.fillRect(639, 540-30+5, 33, 31);	//Bouton prise automatique cliqué //640 540
+			if (obstacles) g.fillRect(484, 450-30+5, 33, 31);			//Bouton obstacle cliquï¿½
+			if (priseTerritoireAuto) g.fillRect(639, 540-30+5, 33, 31);	//Bouton prise automatique cliquï¿½ //640 540
 			
 			g.drawRect(790-4, 230-30+2, getFontMetrics(font).stringWidth(Integer.toString(largeurTerrain))+8, 36);
 			g.drawRect(790-5, 230-30+1, getFontMetrics(font).stringWidth(Integer.toString(largeurTerrain))+10, 38);
@@ -82,7 +82,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 			}
 			
 			//Formes des cases
-				//Carré
+				//Carrï¿½
 			g.drawRect(610, 360-16, 15, 15);
 			g.drawRect(609, 360-17, 17, 17);
 				//Losange
@@ -94,7 +94,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 		    g.drawPolygon(xLosange2, yLosange2, 4);
 
 		} else {
-			//Texte de la page n°2
+			//Texte de la page nï¿½2
 			g.drawString("Joueur 1:", 300, 180);
 			g.drawString("Joueur 2:", 300, 280);
 			if (nbJoueur > 2)g.drawString("Joueur 3:", 300, 380);
@@ -115,7 +115,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 			}
 			
 			g.drawString("Ordinateur", 625, 140);
-			//Champs IA sélectionnés
+			//Champs IA sï¿½lectionnï¿½s
 			if (choixIa[0]) g.fillRect(709, 180-30+5, 33, 31);
 			if (choixIa[1]) g.fillRect(709, 280-30+5, 33, 31);
 			if (nbJoueur > 2){
@@ -190,6 +190,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 							zeroPosClique();
 						} else {
 							choixIa[0] = true;
+							listeNomJoueur[0] = "Timmy";
 							zeroPosClique();
 						}
 					}
@@ -199,6 +200,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 							zeroPosClique();
 						} else {
 							choixIa[1] = true;
+							listeNomJoueur[1] = "Timmy";
 							zeroPosClique();
 						}
 					}
@@ -209,6 +211,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 								zeroPosClique();
 							} else {
 								choixIa[2] = true;
+								listeNomJoueur[2] = "Timmy";
 								zeroPosClique();
 							}
 						}
@@ -218,6 +221,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 								zeroPosClique();
 							} else {
 								choixIa[3] = true;
+								listeNomJoueur[3] = "Timmy";
 								zeroPosClique();
 							}
 						}
@@ -269,7 +273,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 			case "Charger une partie":
 				break;
 			case "Suivant":
-				String[] textMenu2 = new String[nbJoueur+2];	//le premier joueur ne peut pas être un ordinateur
+				String[] textMenu2 = new String[nbJoueur+2];	//le premier joueur ne peut pas ï¿½tre un ordinateur
 				int[][] posMenu2 = new int[nbJoueur+2][2];
 				textMenu2[0] = "Retour";
 				textMenu2[1] = "Commencer";
@@ -307,15 +311,15 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 			case "Commencer":
 				zeroPosClique();
 				Plateau test = new Plateau();
-				test.initPlateau(hauteurTerrain, largeurTerrain);
+				test.initPlateau(hauteurTerrain, largeurTerrain, obstacles);
 				test.setChoixAffichage('G');
 				Joueur[] liste = new Joueur[nbJoueur];
-				int[][] positionDépart = {{0,0},{hauteurTerrain-1,largeurTerrain-1},{0,largeurTerrain-1},{hauteurTerrain-1,0}};
+				int[][] positionDepart = {{0,0},{hauteurTerrain-1,largeurTerrain-1},{0,largeurTerrain-1},{hauteurTerrain-1,0}};
 				for (int i=0; i<nbJoueur; i++){
 					if (choixIa[i]) liste[i] = new IA();
 					else liste[i] = new Joueur();
 					liste[i].setNom(listeNomJoueur[i]);
-					test.creationJoueur(positionDépart[i][0], positionDépart[i][1], liste[i]);
+					test.creationJoueur(positionDepart[i][0], positionDepart[i][1], liste[i]);
 					liste[i].conquerir(liste[i].getCouleur(), test);
 				}
 				test.setListeJoueurs(liste);
@@ -342,25 +346,34 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 				zeroPosClique();
 				break;
 			case "Joueur0":
-				String joueur1 = questionStr("Joueur 1");
+				String joueur1 = "";
+				if (choixIa[0]) joueur1 = questionIa(0);
+				else joueur1 = questionStr("Joueur 1", 0);
 				setListeNomJoueur(joueur1, 0);
 				System.out.println(joueur1);
 				zeroPosClique();
 				break;
 			case "Joueur1":
-				String joueur2 = questionStr("Joueur 2");
+				String joueur2 = "";
+				if (choixIa[1]) joueur2 = questionIa(1);
+				else joueur2 = questionStr("Joueur 2", 1);
 				setListeNomJoueur(joueur2, 1);
 				System.out.println(joueur2);
 				zeroPosClique();
 				break;
 			case "Joueur2":
-				String joueur3 = questionStr("Joueur 3");
+				String joueur3 = "";
+				if (choixIa[2]) joueur3 = questionIa(2);
+				else joueur3 = questionStr("Joueur 3", 2);
+				
 				setListeNomJoueur(joueur3, 2);
 				System.out.println(joueur3);
 				zeroPosClique();
 				break;
 			case "Joueur3":
-				String joueur4 = questionStr("Joueur 4");
+				String joueur4 = "";
+				if (choixIa[3]) joueur4 = questionIa(3);
+				else joueur4 = questionStr("Joueur 4", 3);
 				setListeNomJoueur(joueur4, 3);
 				System.out.println(joueur4);
 				zeroPosClique();
@@ -370,30 +383,44 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 		}
 	}
 	
-	public static int questionInt(String text){
+	public int questionInt(String text){
 		int max = 30;
 		if (text.compareTo("Largeur") == 0) max = 40;
 		int reponse = 15;
 		do {
-			JOptionPane jop = new JOptionPane();
-			String rep = jop.showInputDialog(null, text + " (comprise entre 5 et " + max + "):", text, JOptionPane.QUESTION_MESSAGE);
+			String rep = JOptionPane.showInputDialog(null, text + " (comprise entre 5 et " + max + "):", text, JOptionPane.QUESTION_MESSAGE);
 			try {
 				reponse = Integer.parseInt(rep);
 			} catch (NumberFormatException e){
+				if (rep == null){
+					if (text == "Largeur") reponse = largeurTerrain;
+					else reponse = hauteurTerrain;
+				}
 				reponse = 0;
 			}
 		}while(reponse<5 || reponse>max);
 		return reponse;
 	}
-	public static String questionStr(String text){
+	public String questionStr(String text, int numeroJoueur){
 		String reponse = "";
 		do {
-			JOptionPane jop = new JOptionPane();
-			 reponse = jop.showInputDialog(null,"Nom du " + text + " (avec moins de 8 caractères):", text, JOptionPane.QUESTION_MESSAGE);
+			 reponse = JOptionPane.showInputDialog(null,"Nom du " + text + " (avec moins de 8 caractï¿½res):", text, JOptionPane.QUESTION_MESSAGE);
+			 if(reponse == null) reponse = listeNomJoueur[numeroJoueur];
 		}while(reponse.length()>8 || reponse.length()<0);
 		return reponse;
 	}
-	
+	public String questionIa(int numeroIa){
+		String[] nomOrdi = {"Timmy", "John", "Resetti"};
+		String nom = (String)JOptionPane.showInputDialog(null, 
+				"Choisissez l'ordinateur",
+				"Choix ordinateur",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				nomOrdi,
+				nomOrdi[2]);
+		if(nom == null) nom = listeNomJoueur[numeroIa];
+		return nom;
+	}
 	
 	public boolean isPage1() {
 		return page1;

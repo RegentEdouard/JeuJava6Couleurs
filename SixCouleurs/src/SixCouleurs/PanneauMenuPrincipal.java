@@ -97,7 +97,7 @@ public class PanneauMenuPrincipal extends JPanel{
 	
 	
 	public void menu(Fenetre fen){
-		String[] textMenu = {"Jouer","Jouer en réseau","Règles","Scores","Quitter"};
+		String[] textMenu = {"Jouer","Jouer en rÃ©seau","RÃ¨gles","Scores","Quitter"};
 		int[][] posMenu = {{525,300},{440,375},{521,450},{520,525},{511,600}};
 		text = textMenu;
 		position = posMenu;
@@ -115,9 +115,9 @@ public class PanneauMenuPrincipal extends JPanel{
 				menuJouer.menuJouer(fen);
 				menu = false;
 				break;
-			case "Jouer en réseau":
+			case "Jouer en rï¿½seau":
 				break;
-			case "Règles":
+			case "Rï¿½gles":
 				break;
 			case "Scores":
 				break;
