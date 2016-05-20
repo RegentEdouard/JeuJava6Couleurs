@@ -59,7 +59,7 @@ public class IA extends Joueur{
 		for (int i=0; i<listeCouleurJouable.length; i++) System.out.print(listeCouleurJouable[i] + " ");
 		System.out.println();
 		char couleur = 'A';
-		int[] listeCouleurChoix = listeCouleursAdjacentes(plat);
+		int[] listeCouleurChoix = listeCouleursAdjacentes(plat,'N');
 
 		//Cr�ation d'un tableau contenant les couleurs adjacentes
 		int nbCouleurAdjacentes = 0;
@@ -131,7 +131,7 @@ public class IA extends Joueur{
 			}
 		}
 		char couleur = 'A';
-		int[] listeCouleurChoix = listeCouleursAdjacentes(plat);
+		int[] listeCouleurChoix = listeCouleursAdjacentes(plat,'N');
 		for (int i=0; i<listeCouleurChoix.length; i++) System.out.print(listeCouleurChoix[i]);
 		System.out.println();
 		char[] listeCouleurA = triCouleurDecroissant(listeCouleurChoix);
@@ -157,7 +157,13 @@ public class IA extends Joueur{
 			}
 		}
 		char couleur = 'A';
-		int[] listeCouleurChoix = listeCouleursAdjacentes(plat);
+		int[] listeCouleurChoix = {0, 0, 0, 0, 0, 0};
+		for (char coul : listeCouleurNonJouable){
+			int[] listeCouleurChoixJoueur = listeCouleursAdjacentes(plat, coul);
+			for (int i=0; i<6; i++)
+				listeCouleurChoix[i] += listeCouleurChoixJoueur[i];
+		}
+		
 		
 		char[] listeCouleurA = triCouleurDecroissant(listeCouleurChoix);
 
@@ -179,19 +185,29 @@ public class IA extends Joueur{
 	}
 
 
-	private int[] listeCouleursAdjacentes(Plateau plat){
+	private int[] listeCouleursAdjacentes(Plateau plat, char couleur){
 		int[] listeCouleur = {0, 0, 0, 0, 0, 0};		//Rouge, Orange, Jaune, Vert, Bleu, Violet
 		boolean boucle = true;
 		int curseurX = 0;
 		int curseurY = 0;
 		
 		//Recherche du coin de départ
-		if (territoire[territoire.length-1][0]) curseurX = territoire.length-1;
-		if (territoire[0][territoire[0].length-1]) curseurY = territoire[0].length-1;
-		if (territoire[territoire.length-1][territoire[0].length-1]) {
-			curseurX = territoire.length-1;
-			curseurY = territoire[0].length-1;
+		if (couleur == 'N'){
+			if (territoire[territoire.length-1][0]) curseurX = territoire.length-1;
+			if (territoire[0][territoire[0].length-1]) curseurY = territoire[0].length-1;
+			if (territoire[territoire.length-1][territoire[0].length-1]) {
+				curseurX = territoire.length-1;
+				curseurY = territoire[0].length-1;
+			}
+		} else {
+			if (plat.getPlateau()[territoire.length-1][0] == couleur) curseurX = territoire.length-1;
+			if (plat.getPlateau()[0][territoire[0].length-1] == couleur) curseurY = territoire[0].length-1;
+			if (plat.getPlateau()[territoire.length-1][territoire[0].length-1] == couleur) {
+				curseurX = territoire.length-1;
+				curseurY = territoire[0].length-1;
+			}
 		}
+		
 
 //		char direction = 'N'; //4 directionos: Nord, Est, Sud, Ouest
 		LinkedList<int[]> listeBordureCouleur = territoireAdjacent(plat, curseurX, curseurY);
@@ -310,10 +326,10 @@ public class IA extends Joueur{
 				}
 				
 			}
-			//Fin de la v�rif
+			//Fin de la vérif
 
 			
-			//D�placement � la fronti�re du territoire
+			//Déplacement à la frontière du territoire
 			curseurX = listeBordureCouleur.peek()[0];
 			curseurY = listeBordureCouleur.peek()[1];
 			listeBordureCouleur.remove();

@@ -11,14 +11,15 @@ import javax.swing.JPanel;
 public class PanneauPlateau extends JPanel  {
 
 	private char[][] plateau;
-	public Joueur[] listeJoueur;
-	public int joueurActif;
-	public boolean fin = false;
-	public int posCliqueX = 0;
-	public int posCliqueY = 0;
-	public int posSourisX = 0;
-	public int posSourisY = 0;
-	public char couleurSouris;
+	private String formeCase;
+	private Joueur[] listeJoueur;
+	private int joueurActif;
+	private boolean fin = false;
+	private int posCliqueX = 0;
+	private int posCliqueY = 0;
+	private int posSourisX = 0;
+	private int posSourisY = 0;
+	private char couleurSouris;
 
 	public void paintComponent(Graphics g) {
 
@@ -35,8 +36,6 @@ public class PanneauPlateau extends JPanel  {
 
 
 		//Affichage du plateau
-		//TODO réadapter la taille du terrain
-		//TODO ajouter la couleur noir
 		for (int i=0; i<plateau.length; i++){
 			for (int j=0; j<plateau[0].length; j++){	//'r','o','j','v','b','i'
 				switch(plateau[i][j]){					//Sélection des couleurs
@@ -82,18 +81,61 @@ public class PanneauPlateau extends JPanel  {
 					g.setColor(Color.black);
 					break;
 				}
-				//Création des carrés
 				int largeurCase = largeur/plateau.length;
 				int hauteurCase = hauteur/plateau[0].length;
 				largeurCase = Math.min(largeurCase, hauteurCase);
 				largeurCase = Math.max(largeurCase, 21);
 				hauteurCase = largeurCase;
-				int ecartGauche = (largeur - largeurCase * plateau.length-40)/2;
-				g.fillRect(i*largeurCase+20+ecartGauche, j*hauteurCase+20, largeurCase, hauteurCase);
-				//Contours blanc
-				g.setColor(Color.white);
-				g.drawRect(i*largeurCase+20+ecartGauche, j*hauteurCase+20, largeurCase, hauteurCase);
-				g.drawRect(i*largeurCase+21+ecartGauche, j*hauteurCase+21, largeurCase-2, hauteurCase-2);
+				int ecartGauche = (largeur - largeurCase * plateau.length-20)/2;
+				int ecartHaut = (hauteur - hauteurCase * plateau[0].length-20)/2;
+				switch (formeCase){
+				case "carré":
+					//Création des carrés	
+					g.fillRect(i*largeurCase+20+ecartGauche, j*hauteurCase+20+ecartHaut, largeurCase, hauteurCase);
+					//Contours blanc
+					g.setColor(Color.white);
+					g.drawRect(i*largeurCase+20+ecartGauche, j*hauteurCase+20+ecartHaut, largeurCase, hauteurCase);
+					g.drawRect(i*largeurCase+21+ecartGauche, j*hauteurCase+21+ecartHaut, largeurCase-2, hauteurCase-2);
+					break;
+
+				case "losange":
+					largeurCase = largeur/(plateau.length+1);	//Pour que le côté ne dépasse pas
+					hauteurCase = hauteur/(plateau[0].length/2);	//En comptant le décalage
+					largeurCase = Math.min(largeurCase, hauteurCase);
+					if (largeurCase%2 != 0) largeurCase--;	//Pour avoir un nombre de pixel impair
+					hauteurCase = largeurCase;
+					ecartGauche = (largeur - largeurCase * (plateau.length+1)-20)/2;
+					ecartHaut = (hauteur - hauteurCase * (plateau[0].length/2)-20/2)/2;
+					
+					
+					//Création des losanges
+
+					int x1 = i*largeurCase+20+ecartGauche;
+					if (j%2 != 0) x1 += largeurCase/2;
+					int y1 = j*hauteurCase/2+20+ecartHaut;
+					int yLosange[] = {(int)(y1+hauteurCase/2), y1+hauteurCase, (int)(y1+hauteurCase/2), y1};
+					int xLosange[] = {x1, (int)(x1+largeurCase/2), x1+largeurCase, (int)(x1+largeurCase/2)};
+					g.fillPolygon(xLosange, yLosange, 4);
+					
+					//Contours blanc
+					g.setColor(Color.white);
+					g.drawPolygon(xLosange, yLosange, 4);
+					xLosange[0] += 1;
+					xLosange[2] -= 1;
+					yLosange[1] -= 1;
+					yLosange[3] += 1;
+					g.drawPolygon(xLosange, yLosange, 4);
+					break;
+
+				case "hexagone":
+					g.fillRect(i*largeurCase+20+ecartGauche, j*hauteurCase+20+ecartHaut, largeurCase, hauteurCase);
+					//Contours blanc
+					g.setColor(Color.white);
+					g.drawRect(i*largeurCase+20+ecartGauche, j*hauteurCase+20+ecartHaut, largeurCase, hauteurCase);
+					g.drawRect(i*largeurCase+21+ecartGauche, j*hauteurCase+21+ecartHaut, largeurCase-2, hauteurCase-2);
+					break;
+				}
+				
 
 
 				//System.out.print(plateau[i][j] + " ");
@@ -168,6 +210,14 @@ public class PanneauPlateau extends JPanel  {
 			g.drawString(listeJoueur[joueurActif].getNom() + " !", 945, 525);
 			g.drawString("Félicitation", 935, 550);
 		}
+	}
+
+	public String getFormeCase() {
+		return formeCase;
+	}
+
+	public void setFormeCase(String formeCase) {
+		this.formeCase = formeCase;
 	}
 
 	public PanneauPlateau(){

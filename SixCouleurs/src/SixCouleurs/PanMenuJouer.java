@@ -10,7 +10,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 	private int nbJoueur = 2;
 	private int largeurTerrain = 15;
 	private int hauteurTerrain = 15;
-	private String formeCase = "carr�";
+	private String formeCase = "carré";
 	private boolean obstacles = false;
 	private boolean priseTerritoireAuto = false;
 	private String[] listeNomJoueur = {"      ", "      ", "      ", "      "};
@@ -82,19 +82,25 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 			}
 			
 			//Formes des cases
-				//Carr�
-			g.drawRect(610, 360-16, 15, 15);
-			g.drawRect(609, 360-17, 17, 17);
+				//Carré
+			g.drawRect(635, 360-18, 20, 20);
+			g.drawRect(634, 360-19, 22, 22);
+			if(formeCase.equals("carré")) g.fillRect(638, 363-18, 15, 15);
 				//Losange
-			int xLosange[] = {636, 643, 651, 643};
+			int xLosange[] = {670, 683, 696, 683};
 		    int yLosange[] = {352, 365, 352, 339};
 		    g.drawPolygon(xLosange, yLosange, 4);
-		    int xLosange2[] = {635, 643, 652, 643};
+		    int xLosange2[] = {669, 683, 697, 683};
 		    int yLosange2[] = {352, 366, 352, 338};
 		    g.drawPolygon(xLosange2, yLosange2, 4);
+		    if(formeCase.equals("losange")){
+		    	int xLosangeSelection[] = {673, 683, 694, 683};
+			    int yLosangeSelection[] = {352, 363, 352, 342};
+			    g.fillPolygon(xLosangeSelection, yLosangeSelection, 4);
+		    }
 
 		} else {
-			//Texte de la page n�2
+			//Texte de la page n°2
 			g.drawString("Joueur 1:", 300, 180);
 			g.drawString("Joueur 2:", 300, 280);
 			if (nbJoueur > 2)g.drawString("Joueur 3:", 300, 380);
@@ -115,7 +121,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 			}
 			
 			g.drawString("Ordinateur", 625, 140);
-			//Champs IA s�lectionn�s
+			//Champs IA sélectionnés
 			if (choixIa[0]) g.fillRect(709, 180-30+5, 33, 31);
 			if (choixIa[1]) g.fillRect(709, 280-30+5, 33, 31);
 			if (nbJoueur > 2){
@@ -181,7 +187,6 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 
 			} else {
 				//Boutons IA:
-				//TODO ajouter IA joueur 1
 				
 				if (posCliqueX>705 && posCliqueX<745){
 					if (posCliqueY>150 && posCliqueY<190){
@@ -234,8 +239,8 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 
 
 	public void menuJouer(Fenetre fen){
-		String[] textMenu = {"Retour", "-", "+","Charger un terrain","Charger une partie", "   ","Suivant", "   "};
-		int[][] posMenu = {{20,50},{660,140},{720,140},{261,625},{261,675},{485, 450},{701,675},{640,540}};
+		String[] textMenu = {"Retour", "-", "+", "<", ">", "Charger un terrain", "Charger une partie", "   ", "Suivant", "   "};
+		int[][] posMenu = {{20,50},{660,140},{720,140},{610,360},{745,360},{261,625},{261,675},{485, 450},{701,675},{640,540}};
 		text = textMenu;
 		position = posMenu;
 		fen.setContentPane(this);
@@ -266,6 +271,28 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 				break;
 			case "+":
 				if (nbJoueur<4) nbJoueur = nbJoueur+1;
+				zeroPosClique();
+				break;
+			case "<":
+				switch (formeCase){
+				case "losange":
+					formeCase = "carré";
+					break;
+				case "hexagone":
+					formeCase = "losange";
+					break;
+				}
+				zeroPosClique();
+				break;
+			case ">":
+				switch (formeCase){
+				case "carré":
+					formeCase = "losange";
+					break;
+				case "losange":
+					formeCase = "hexagone";
+					break;
+				}
 				zeroPosClique();
 				break;
 			case "Charger un terrain":
@@ -311,7 +338,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 			case "Commencer":
 				zeroPosClique();
 				Plateau test = new Plateau();
-				test.initPlateau(hauteurTerrain, largeurTerrain, obstacles);
+				test.initPlateau(hauteurTerrain, largeurTerrain, obstacles);	//TODO faire obstacles losanges
 				test.setChoixAffichage('G');
 				Joueur[] liste = new Joueur[nbJoueur];
 				int[][] positionDepart = {{0,0},{hauteurTerrain-1,largeurTerrain-1},{0,largeurTerrain-1},{hauteurTerrain-1,0}};
@@ -324,6 +351,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 				}
 				test.setListeJoueurs(liste);
 				PanneauPlateau pan = new PanneauPlateau();
+				pan.setFormeCase(formeCase);
 				fen.setContentPane(pan);
 				pan.setPlateau(test.getPlateau());
 				pan.setListeJoueur(test.getListeJoueurs());
@@ -384,6 +412,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 	}
 	
 	public int questionInt(String text){
+		// TODO modifier la taille max en fonction de la forme des cases
 		int max = 30;
 		if (text.compareTo("Largeur") == 0) max = 40;
 		int reponse = 15;
@@ -458,6 +487,53 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 		this.hauteurTerrain = hauteurTerrain;
 	}
 
+
+
+	public String getFormeCase() {
+		return formeCase;
+	}
+
+
+	public void setFormeCase(String formeCase) {
+		this.formeCase = formeCase;
+	}
+
+
+	public boolean isObstacles() {
+		return obstacles;
+	}
+
+
+	public void setObstacles(boolean obstacles) {
+		this.obstacles = obstacles;
+	}
+
+
+	public boolean isPriseTerritoireAuto() {
+		return priseTerritoireAuto;
+	}
+
+
+	public void setPriseTerritoireAuto(boolean priseTerritoireAuto) {
+		this.priseTerritoireAuto = priseTerritoireAuto;
+	}
+
+
+	public boolean[] getChoixIa() {
+		return choixIa;
+	}
+
+
+	public void setChoixIa(boolean[] choixIa) {
+		this.choixIa = choixIa;
+	}
+
+
+	public void setListeNomJoueur(String[] listeNomJoueur) {
+		this.listeNomJoueur = listeNomJoueur;
+	}
+
+	
 
 
 

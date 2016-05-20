@@ -56,24 +56,65 @@ public class Joueur {
 			for (int i=0; i<terrain.length; i++){
 				for (int j=0; j<terrain[0].length; j++){
 					if (terrain[i][j] == couleur){
-						if (j>0 && terrain[i][j-1] == (char)((int)couleur+32)){
-							terrain[i][j-1] = couleur;
-							territoire[i][j-1] = true;
-							score ++;
-							fin = false;
-						}
-						if (j<terrain[0].length-1 && terrain[i][j+1] == (char)((int)couleur+32)){
-							terrain[i][j+1] = couleur;
-							territoire[i][j+1] = true;
-							score ++;
-							fin = false;
-						}
+//						switch (p.getPanneau().getFormeCase()){
+//						case "carré":
+							if (j>0 && terrain[i][j-1] == (char)((int)couleur+32)){
+								terrain[i][j-1] = couleur;
+								territoire[i][j-1] = true;
+								score ++;
+								fin = false;
+							}
+							if (j<terrain[0].length-1 && terrain[i][j+1] == (char)((int)couleur+32)){
+								terrain[i][j+1] = couleur;
+								territoire[i][j+1] = true;
+								score ++;
+								fin = false;
+							}
+//							break;
+//						case "losange":
+//							if (j>0 && terrain[i-1][j-1] == (char)((int)couleur+32)){
+//								terrain[i-1][j-1] = couleur;
+//								territoire[i-1][j-1] = true;
+//								score ++;
+//								fin = false;
+//							}
+//							if (j<terrain[0].length-1 && terrain[i-1][j+1] == (char)((int)couleur+32)){
+//								terrain[i-1][j+1] = couleur;
+//								territoire[i-1][j+1] = true;
+//								score ++;
+//								fin = false;
+//							}
+//							break;
+//						case "hexagone":
+//							break;
+//						}
+						
 					}
 				}
 			}
 			for (int j=0; j<terrain[0].length; j++){
 				for (int i=0; i<terrain.length; i++){
 					if (terrain[i][j] == couleur){
+//						switch (p.getPanneau().getFormeCase()){
+//						case "carré":
+//							break;
+//						case "losange":
+//						if (i>0 && terrain[i+1][j-1] == (char)((int)couleur+32)){
+//							terrain[i+1][j-1] = couleur;
+//							territoire[i+1][j-1] = true;
+//							score ++;
+//							fin = false;
+//						}
+//						if (i<terrain.length-1 && terrain[i+1][j+1] == (char)((int)couleur+32)){
+//							terrain[i+1][j+1] = couleur;
+//							territoire[i+1][j+1] = true;
+//							score ++;
+//							fin = false;
+//						}
+//							break;
+//						case "hexagone":
+//							break;
+//						}
 						if (i>0 && terrain[i-1][j] == (char)((int)couleur+32)){
 							terrain[i-1][j] = couleur;
 							territoire[i-1][j] = true;

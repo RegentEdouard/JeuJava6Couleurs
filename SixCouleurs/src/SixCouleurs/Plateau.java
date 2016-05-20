@@ -2,6 +2,8 @@ package SixCouleurs;
 
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 public class Plateau {
 	private char[][] plateau;
 	private Joueur[] listeJoueurs;
@@ -122,9 +124,6 @@ public class Plateau {
 		}
 		System.out.println(scoreMax[1] + " est vainqueur avec un score de: " + scoreMax[0]);
 		if (choixAffichage == 'G') panneau.repaint();
-		while (true){
-			
-		}
 	}
 	
 	public void creationJoueur(int positionX, int positionY, Joueur j){
@@ -201,7 +200,34 @@ public class Plateau {
 		
 		if (choixAffichage == 'G') panneau.setFin(true);
 		afficherScore(listeJoueurs);
+		fenetreFinDePartie();
 	}
 
+	private void fenetreFinDePartie(){
+		String[] choix = {"Recommencer", "Quitter"};	//TODO Ajout d'une fonction screenshot?
+		int rang = JOptionPane.showOptionDialog(null, "Voulez-vous rejouer?","Fin de partie",
+				JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,choix,choix[1]);
+		if (choix[rang] == "Quitter") debutPartie();
+		else {
+			PanMenuJouer menuJouer = new PanMenuJouer();
+			PanneauPlateau nouveauPanneau = new PanneauPlateau();
+			Fenetre fen = new Fenetre(nouveauPanneau);	//1150 * 740
+			menuJouer.setNbJoueur(listeJoueurs.length);
+			menuJouer.setLargeurTerrain(plateau.length);
+			menuJouer.setHauteurTerrain(plateau[0].length);
+			menuJouer.setFormeCase(panneau.getFormeCase());
+			if (nbObstacles > 0) menuJouer.setObstacles(true);
+			else menuJouer.setObstacles(false);
+//			if (nbObstacles > 0) menuJouer.setPriseTerritoireAuto(true);
+//			else menuJouer.setPriseTerritoireAuto(false);
+			String[] listeNomJoueurs = new String[listeJoueurs.length];
+			for (int i=0; i< listeJoueurs.length; i++){
+				listeNomJoueurs[i] = listeJoueurs[i].getNom();
+			}
+			menuJouer.setListeNomJoueur(listeNomJoueurs);
+//			menuJouer.setChoixIa();
+			menuJouer.menuJouer(fen);
+		}
+	}
 
 }

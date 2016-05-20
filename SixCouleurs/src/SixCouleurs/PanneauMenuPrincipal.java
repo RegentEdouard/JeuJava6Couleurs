@@ -115,9 +115,9 @@ public class PanneauMenuPrincipal extends JPanel{
 				menuJouer.menuJouer(fen);
 				menu = false;
 				break;
-			case "Jouer en r�seau":
+			case "Jouer en réseau":
 				break;
-			case "R�gles":
+			case "Règles":
 				break;
 			case "Scores":
 				break;
