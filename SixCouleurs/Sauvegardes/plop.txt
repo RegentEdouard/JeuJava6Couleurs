@@ -1,0 +1,45 @@
+Joueur 1
+Joueur 1 I Joueur
+Joueur 2 B Joueur
+carré
+0
+nulli b b b i b o i o j b b v b o 
+nullo r v i i r v r i j b r o b v 
+nulli b b o i b o r j r o b o v i 
+nullv i i v r j v r j v v i r b b 
+nullv o i v b b j i v v i i r i b 
+nullr j b i b o o j r o j b b v j 
+nullb b i i v o i r r o r r i v b 
+nullb o j v v i j v b i v b r r b 
+nullv b v r o v o j j j r o v o j 
+nulli r v j i o v b v i r v b r j 
+nulli v v i v o j o o o i v b b b 
+nullb v r i j i o i v b j r r j b 
+nullo b r i b r o v i v i j b b j 
+nullo o o b r j v i b v b o i o o 
+nullv v j b j b b v j v b v o v i 
+nulli r i j o r j o b v v b b b v 
+nullr b r o j j o r j r v v o j i 
+nullr j o r v r r i v i j i b b r 
+nullr j b i o v v o v j b v b j r 
+nullb v i i i b i b o j o v j b r 
+nullv r o r j v j i j r i j i j j 
+nullj j j j j b i b r b b b r b o 
+nullb i v r o o o b j i o j v b b 
+nullr b o j r i j b o b b b o i j 
+nullv j o v b j b r i i i j r v r 
+nullb j i o o j b b b o v i v b v 
+nulli i v j r i b j v b i o r j j 
+nullo b v r b r r i r j v j r j b 
+nullo j j b i j i i v b r r r b b 
+nulli b o i v b v o o o j o r i r 
+nullj b o r v j v r r i i o o r o 
+nullj i o b b i j j b o i i r j o 
+nullv v b r j b i v j j r j j b j 
+nullj b v b b i b i i o r i i i i 
+nullj o o r b v j v j o b i v b i 
+nulli b v j r b o r i r v r v v r 
+nullj i j b b b o o b v o i i o v 
+nullv v i r j r b b i b r b j j j 
+nullb i i b b b o v b b b r r v o 
+nullv r j o j o b i r b r r b r b 

@@ -1,7 +1,5 @@
 package SixCouleurs;
 
-import java.util.LinkedList;
-
 public class IA extends Joueur{
 	
 	private boolean[][] territoireLocal;
@@ -17,6 +15,11 @@ public class IA extends Joueur{
 	}
 
 	public void jouer(Joueur[] liste, Plateau p, PanneauPlateau pan, char choix){
+		for (int i=0; i<territoireLocal.length; i++){
+			for (int j=0; j<territoireLocal[0].length; j++){
+				territoireLocal[i][j] = false;
+			}
+		}
 		char[] listeCouleur = new char[liste.length];
 		for (int i=0; i<liste.length; i++) listeCouleur[i]=liste[i].getCouleur();	//r�cup�ration des couleurs des joueurs adverses
 		char couleur = 'A';
@@ -40,28 +43,27 @@ public class IA extends Joueur{
 			case "Marvin":
 				couleur = iaArbre(p, listeCouleur);		//Retourne le premier caract�re
 				break;
+			case "Chuck Norris":
+				couleur = iaChuckNorris(p, listeCouleur);
 			}
 			
 		}
+		System.out.println("//"+couleur);
 		conquerir(couleur, p);
+		
 		p.afficher();
 
 	}
 
 
 	private char iaAlea(Plateau plat, char[] listeCouleurNonJouable){
-		for (int i=0; i<territoireLocal.length; i++){
-			for (int j=0; j<territoireLocal[0].length; j++){
-				territoireLocal[i][j] = false;
-			}
-		}
-		char[] listeCouleurJouable = tabCouleurJouable(listeCouleurNonJouable);	//Cr�ation de la liste des couleurs jouables
+		char[] listeCouleurJouable = tabCouleurJouable(listeCouleurNonJouable);	//Création de la liste des couleurs jouables
 		for (int i=0; i<listeCouleurJouable.length; i++) System.out.print(listeCouleurJouable[i] + " ");
 		System.out.println();
 		char couleur = 'A';
 		int[] listeCouleurChoix = listeCouleursAdjacentes(plat,'N');
 
-		//Cr�ation d'un tableau contenant les couleurs adjacentes
+		//Création d'un tableau contenant les couleurs adjacentes
 		int nbCouleurAdjacentes = 0;
 		for (int i=0; i<listeCouleurChoix.length; i++){
 			if (listeCouleurChoix[i] == 0) nbCouleurAdjacentes++;
@@ -125,11 +127,6 @@ public class IA extends Joueur{
 	}
 
 	private char iaMaxPointPerso(Plateau plat, char[] listeCouleurNonJouable){
-		for (int i=0; i<territoireLocal.length; i++){
-			for (int j=0; j<territoireLocal[0].length; j++){
-				territoireLocal[i][j] = false;
-			}
-		}
 		char couleur = 'A';
 		int[] listeCouleurChoix = listeCouleursAdjacentes(plat,'N');
 		for (int i=0; i<listeCouleurChoix.length; i++) System.out.print(listeCouleurChoix[i]);
@@ -151,11 +148,6 @@ public class IA extends Joueur{
 	}
 
 	private char iaMinPointAutre(Plateau plat, char[] listeCouleurNonJouable){
-		for (int i=0; i<territoireLocal.length; i++){
-			for (int j=0; j<territoireLocal[0].length; j++){
-				territoireLocal[i][j] = false;
-			}
-		}
 		char couleur = 'A';
 		int[] listeCouleurChoix = {0, 0, 0, 0, 0, 0};
 		for (char coul : listeCouleurNonJouable){
@@ -184,14 +176,28 @@ public class IA extends Joueur{
 		return iaMaxPointPerso(plat, listeCouleurNonJouable);
 	}
 
+	private char iaChuckNorris(Plateau plat, char[] listeCouleurNonJouable){
+		char[] listeCouleurJouable = tabCouleurJouable(listeCouleurNonJouable);	//Création de la liste des couleurs jouables
+		char couleur = (char)((int)listeCouleurJouable[Plateau.alea(0,listeCouleurJouable.length)]+32);
+		Case[][] nouveauPlateau = plat.getPlateau();
+		for (int i=0; i<plat.getPlateau().length; i++){
+			for (int j=0; j<plat.getPlateau()[0].length; j++){
+				nouveauPlateau[i][j].setCouleur(couleur);
+				score++;
+			}
+		}
+		score--;
+		plat.setPlateau(nouveauPlateau);
+		return couleur;
+	}
 
 	private int[] listeCouleursAdjacentes(Plateau plat, char couleur){
+		//TODO Bug couleur adjacente?
 		int[] listeCouleur = {0, 0, 0, 0, 0, 0};		//Rouge, Orange, Jaune, Vert, Bleu, Violet
-		boolean boucle = true;
+		Case[][] terrain = plat.getPlateau();	//récupération
+		
 		int curseurX = 0;
 		int curseurY = 0;
-		
-		//Recherche du coin de départ
 		if (couleur == 'N'){
 			if (territoire[territoire.length-1][0]) curseurX = territoire.length-1;
 			if (territoire[0][territoire[0].length-1]) curseurY = territoire[0].length-1;
@@ -200,254 +206,66 @@ public class IA extends Joueur{
 				curseurY = territoire[0].length-1;
 			}
 		} else {
-			if (plat.getPlateau()[territoire.length-1][0] == couleur) curseurX = territoire.length-1;
-			if (plat.getPlateau()[0][territoire[0].length-1] == couleur) curseurY = territoire[0].length-1;
-			if (plat.getPlateau()[territoire.length-1][territoire[0].length-1] == couleur) {
+			if (plat.getPlateau()[territoire.length-1][0].getCouleur() == couleur) curseurX = territoire.length-1;
+			if (plat.getPlateau()[0][territoire[0].length-1].getCouleur() == couleur) curseurY = territoire[0].length-1;
+			if (plat.getPlateau()[territoire.length-1][territoire[0].length-1].getCouleur() == couleur) {
 				curseurX = territoire.length-1;
 				curseurY = territoire[0].length-1;
 			}
 		}
 		
-
-//		char direction = 'N'; //4 directionos: Nord, Est, Sud, Ouest
-		LinkedList<int[]> listeBordureCouleur = territoireAdjacent(plat, curseurX, curseurY);
-		while (boucle){
-			
-			//Compte des couleurs voisines
-			if (curseurX != 0 && (int)plat.getPlateau()[curseurX-1][curseurY]>97 && !territoireLocal[curseurX-1][curseurY]){	//V�rification si le caract�re est en minuscule
-				LinkedList<int[]> listeTerritoireAdjacent = territoireAdjacent(plat, curseurX-1, curseurY);
-				switch (plat.getPlateau()[listeTerritoireAdjacent.peek()[0]][listeTerritoireAdjacent.peek()[1]]){
-				case 'r':
-					listeCouleur[0] += listeTerritoireAdjacent.size();
-					break;
-				case 'o':
-					listeCouleur[1] += listeTerritoireAdjacent.size();
-					break;
-				case 'j':
-					listeCouleur[2] += listeTerritoireAdjacent.size();
-					break;
-				case 'v':
-					listeCouleur[3] += listeTerritoireAdjacent.size();
-					break;
-				case 'b':
-					listeCouleur[4] += listeTerritoireAdjacent.size();
-					break;
-				case 'i':
-					listeCouleur[5] += listeTerritoireAdjacent.size();
-					break;
-				}
-				for (int i=0; i<listeTerritoireAdjacent.size(); i++){
-					territoireLocal[listeTerritoireAdjacent.peek()[0]][listeTerritoireAdjacent.peek()[1]] = true;
-					listeTerritoireAdjacent.remove();
-				}
-
-			}
-			if (curseurX != plat.getPlateau().length-1 && (int)plat.getPlateau()[curseurX+1][curseurY]>97 && !territoireLocal[curseurX+1][curseurY]){	//V�rification minuscule
-				LinkedList<int[]> listeTerritoireAdjacent = territoireAdjacent(plat, curseurX+1, curseurY);
-				switch (plat.getPlateau()[listeTerritoireAdjacent.peek()[0]][listeTerritoireAdjacent.peek()[1]]){
-				case 'r':
-					listeCouleur[0] += listeTerritoireAdjacent.size();
-					break;
-				case 'o':
-					listeCouleur[1] += listeTerritoireAdjacent.size();
-					break;
-				case 'j':
-					listeCouleur[2] += listeTerritoireAdjacent.size();
-					break;
-				case 'v':
-					listeCouleur[3] += listeTerritoireAdjacent.size();
-					break;
-				case 'b':
-					listeCouleur[4] += listeTerritoireAdjacent.size();
-					break;
-				case 'i':
-					listeCouleur[5] += listeTerritoireAdjacent.size();
-					break;
-				}
-				for (int i=0; i<listeTerritoireAdjacent.size(); i++){
-					territoireLocal[listeTerritoireAdjacent.peek()[0]][listeTerritoireAdjacent.peek()[1]] = true;
-					listeTerritoireAdjacent.remove();
-				}
-				
-			}
-			if (curseurY != 0 && (int)plat.getPlateau()[curseurX][curseurY-1]>97 && !territoireLocal[curseurX][curseurY-1]){	//V�rification si le caract�re est en minuscule
-				LinkedList<int[]> listeTerritoireAdjacent = territoireAdjacent(plat, curseurX, curseurY-1);
-				switch (plat.getPlateau()[listeTerritoireAdjacent.peek()[0]][listeTerritoireAdjacent.peek()[1]]){
-				case 'r':
-					listeCouleur[0] += listeTerritoireAdjacent.size();
-					break;
-				case 'o':
-					listeCouleur[1] += listeTerritoireAdjacent.size();
-					break;
-				case 'j':
-					listeCouleur[2] += listeTerritoireAdjacent.size();
-					break;
-				case 'v':
-					listeCouleur[3] += listeTerritoireAdjacent.size();
-					break;
-				case 'b':
-					listeCouleur[4] += listeTerritoireAdjacent.size();
-					break;
-				case 'i':
-					listeCouleur[5] += listeTerritoireAdjacent.size();
-					break;
-				}
-				for (int i=0; i<listeTerritoireAdjacent.size(); i++){
-					territoireLocal[listeTerritoireAdjacent.peek()[0]][listeTerritoireAdjacent.peek()[1]] = true;
-					listeTerritoireAdjacent.remove();
-				}
-				
-			}
-			if (curseurY != plat.getPlateau()[0].length-1 && (int)plat.getPlateau()[curseurX][curseurY+1]>97 && !territoireLocal[curseurX][curseurY+1]){	//V�rification minuscule
-				LinkedList<int[]> listeTerritoireAdjacent = territoireAdjacent(plat, curseurX, curseurY+1);
-				switch (plat.getPlateau()[listeTerritoireAdjacent.peek()[0]][listeTerritoireAdjacent.peek()[1]]){
-				case 'r':
-					listeCouleur[0] += listeTerritoireAdjacent.size();
-					break;
-				case 'o':
-					listeCouleur[1] += listeTerritoireAdjacent.size();
-					break;
-				case 'j':
-					listeCouleur[2] += listeTerritoireAdjacent.size();
-					break;
-				case 'v':
-					listeCouleur[3] += listeTerritoireAdjacent.size();
-					break;
-				case 'b':
-					listeCouleur[4] += listeTerritoireAdjacent.size();
-					break;
-				case 'i':
-					listeCouleur[5] += listeTerritoireAdjacent.size();
-					break;
-				}
-				for (int i=0; i<listeTerritoireAdjacent.size(); i++){
-					territoireLocal[listeTerritoireAdjacent.peek()[0]][listeTerritoireAdjacent.peek()[1]] = true;
-					listeTerritoireAdjacent.remove();
-				}
-				
-			}
-			//Fin de la vérif
-
-			
-			//Déplacement à la frontière du territoire
-			curseurX = listeBordureCouleur.peek()[0];
-			curseurY = listeBordureCouleur.peek()[1];
-			listeBordureCouleur.remove();
-			if (listeBordureCouleur.peek() == null) boucle = false;
-			
+		listeCouleurAdjacent(terrain[curseurX][curseurY], terrain[curseurX][curseurY].getCouleur(), listeCouleur);
+		for (int coul : listeCouleur){
+			System.out.print(coul + ", ");
 		}
-		
+		System.out.println();
 		return listeCouleur;
 	}
 	
-	private int[] deplacementCurseur(int curseurX, int curseurY, char direction, Plateau plat, char couleurTerritoire){
-		int[] result = {curseurX,curseurY,0};	//3 composantes: curseurX, curseurY, direction (1:N,2:E,3:S,4:O)
-		switch (direction){
-		case 'N':
-			if (curseurY != 0 && plat.getPlateau()[curseurX][curseurY-1] == couleurTerritoire){
-				result[1] = curseurY-1;
-				result[2] = 4;	//O
+	private void listeCouleurAdjacent(Case caseVerif, char couleur, int[] listeCouleur){
+		if ((int)caseVerif.getCouleur()>97){	//Vérifie que la case ne soit pas prise (minuscule)
+			territoireLocal[caseVerif.getY()][caseVerif.getX()] = true;
+			if (caseVerif.getCouleur() == couleur || (int)couleur < 97){
+				switch (caseVerif.getCouleur()){
+				case 'r':
+					listeCouleur[0] ++;
+					break;
+				case 'o':
+					listeCouleur[1] ++;
+					break;
+				case 'j':
+					listeCouleur[2] ++;
+					break;
+				case 'v':
+					listeCouleur[3] ++;
+					break;
+				case 'b':
+					listeCouleur[4] ++;
+					break;
+				case 'i':
+					listeCouleur[5] ++;
+					break;
+				}
+				for (int i=0; i<caseVerif.getVoisin().length; i++){
+					if (caseVerif.getVoisin()[i] != null && 
+							!territoireLocal[caseVerif.getVoisin()[i].getY()][caseVerif.getVoisin()[i].getX()]){
+						listeCouleurAdjacent(caseVerif.getVoisin()[i], caseVerif.getCouleur(), listeCouleur);
+					}	
+				}
 			}
-			else if (curseurX != 0 && plat.getPlateau()[curseurX-1][curseurY] == couleurTerritoire){
-				result[0] = curseurX-1;
-				result[2] = 1;	//N
-			}
-			else if (curseurY != plat.getPlateau()[0].length-1 && plat.getPlateau()[curseurX][curseurY+1] == couleurTerritoire){
-				result[1] = curseurY+1;
-				result[2]= 2;	//E
-			}
-			else if (curseurX != plat.getPlateau().length-1 && plat.getPlateau()[curseurX+1][curseurY] == couleurTerritoire){
-				result[0] = curseurX+1;
-				result[2] = 3;	//S
-			}
-			break;
-		case 'E':
-			if (curseurX != 0 && plat.getPlateau()[curseurX-1][curseurY] == couleurTerritoire){
-				result[0] = curseurX-1;
-				result[2] = 1;	//N
-			}
-			else if (curseurY != plat.getPlateau()[0].length-1 && plat.getPlateau()[curseurX][curseurY+1] == couleurTerritoire){
-				result[1] = curseurY+1;
-				result[2] = 2;	//E
-			}
-			else if (curseurX != plat.getPlateau().length-1 && plat.getPlateau()[curseurX+1][curseurY] == couleurTerritoire){
-				result[0] = curseurX+1;
-				result[2] = 3;	//S
-			}
-			else if (curseurY != 0 && plat.getPlateau()[curseurX][curseurY-1] == couleurTerritoire){
-				result[1] = curseurY-1;
-				result[2] = 4;	//O
-			}
-			break;
-		case 'S':
-			if (curseurY != plat.getPlateau()[0].length-1 && plat.getPlateau()[curseurX][curseurY+1] == couleurTerritoire){
-				result[1] = curseurY+1;
-				result[2] = 2;	//E
-			}
-			else if (curseurX != plat.getPlateau().length-1 && plat.getPlateau()[curseurX+1][curseurY] == couleurTerritoire){
-				result[0] = curseurX+1;
-				result[2] = 3;	//S
-			}
-			else if (curseurY != 0 && plat.getPlateau()[curseurX][curseurY-1] == couleurTerritoire){
-				result[1] = curseurY-1;
-				result[2] = 4;	//O
-			}
-			else if (curseurX != 0 && plat.getPlateau()[curseurX-1][curseurY] == couleurTerritoire){
-				result[0] = curseurX-1;
-				result[2] = 1;	//N
-			}
-			break;
-		case 'O':
-			if (curseurX != plat.getPlateau().length-1 && plat.getPlateau()[curseurX+1][curseurY] == couleurTerritoire){
-				result[0] = curseurX+1;
-				result[2] = 3;	//S
-			}
-			else if (curseurY != 0 && plat.getPlateau()[curseurX][curseurY-1] == couleurTerritoire){
-				result[1] = curseurY-1;
-				result[2] = 4;	//O
-			}
-			else if (curseurX != 0 && plat.getPlateau()[curseurX-1][curseurY] == couleurTerritoire){
-				result[0] = curseurX-1;
-				result[2] =	1;	//N
-			}
-			else if (curseurY != plat.getPlateau()[0].length-1 && plat.getPlateau()[curseurX][curseurY+1] == couleurTerritoire){
-				result[1] = curseurY+1;
-				result[2] = 2;	//E
-			}
-			break;
+			
 		}
-		return result;
-	}
-	
-	private LinkedList<int[]> territoireAdjacent(Plateau plat, int X, int Y){
-		//TODO faire le cas en L
-		LinkedList<int[]> listeCoordonnees= new LinkedList<int[]>();
-		int curseurX = X; int curseurY = Y;
-		char direction = 'N';
-		do{
-			int[] tabCurseur = deplacementCurseur(curseurX, curseurY, direction, plat, plat.getPlateau()[X][Y]);
-			curseurX = tabCurseur[0];
-			curseurY = tabCurseur[1];
-			switch(tabCurseur[2]){
-			case 1:
-				direction = 'N';
-				break;
-			case 2:
-				direction = 'E';
-				break;
-			case 3:
-				direction = 'S';
-				break;
-			case 4:
-				direction = 'O';
-				break;
+		else if(caseVerif.getCouleur() == couleur){
+			territoireLocal[caseVerif.getY()][caseVerif.getX()] = true;
+			for (int i=0; i<caseVerif.getVoisin().length; i++){
+				if (caseVerif.getVoisin()[i] != null && 
+						!territoireLocal[caseVerif.getVoisin()[i].getY()][caseVerif.getVoisin()[i].getX()])
+					listeCouleurAdjacent(caseVerif.getVoisin()[i], couleur, listeCouleur);
 			}
-			int[] temp = {curseurX, curseurY};
-			listeCoordonnees.add(temp);
-			if (X == curseurX && Y == curseurY)break;
-		} while (true);
-		return listeCoordonnees;
+			
+		}
 	}
+
 	
 	private char[] triCouleurDecroissant(int[] tableau){
 		//Rouge, Orange, Jaune, Vert, Bleu, Violet

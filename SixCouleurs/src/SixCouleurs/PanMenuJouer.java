@@ -49,7 +49,7 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 			}
 		}
 		if (page1){
-			//Texte de la page n�1
+			//Texte de la page n°1
 			g.drawString("Nombre de joueurs:", 300, 140);
 			g.drawString(Integer.toString(nbJoueur), 685, 140);
 			g.drawString("Taille du terrain:", 300, 230);
@@ -98,7 +98,26 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 			    int yLosangeSelection[] = {352, 363, 352, 342};
 			    g.fillPolygon(xLosangeSelection, yLosangeSelection, 4);
 		    }
-
+		    	//Hexagone
+		    int cote = 16;	//En pixel
+		    int demiCote = (int)(Math.sqrt(cote*cote-cote*cote/4));	//Pythagore
+		    int xHexa[] = {710, 710, 710+demiCote, 710+2*demiCote, 710+2*demiCote, 710+demiCote};
+		    int yHexa[] = {352-cote/2, 352+cote/2, 352+cote, 352+cote/2, 352-cote/2, 352-cote};
+		    g.drawPolygon(xHexa, yHexa, 6);
+		    int cote2 = 17;	//En pixel
+		    int demiCote2 = (int)(Math.sqrt(cote2*cote2-cote2*cote2/4));	//Pythagore
+		    int xHexa2[] = {709, 709, 709+demiCote2, 709+2*demiCote2, 709+2*demiCote2, 709+demiCote2};
+		    int yHexa2[] = {352-cote2/2+1, 352+cote2/2-1, 352+cote2, 352+cote2/2-1, 352-cote2/2+1, 352-cote2};
+		    g.drawPolygon(xHexa2, yHexa2, 6);
+		    if(formeCase.equals("hexagone")){
+		    	int coteSelection = 13;	//En pixel
+			    int demiCoteSelection = (int)(Math.sqrt(coteSelection*coteSelection-coteSelection*coteSelection/4));
+			    int xHexaSelection[] = {712+1, 712+1, 712+demiCoteSelection, 712+2*demiCoteSelection, 
+			    		712+2*demiCoteSelection, 712+demiCoteSelection};
+			    int yHexaSelection[] = {352-coteSelection/2, 352+coteSelection/2, 352+coteSelection, 352+coteSelection/2, 
+			    		352-coteSelection/2, 352-coteSelection};
+			    g.fillPolygon(xHexaSelection, yHexaSelection, 6);
+		    }
 		} else {
 			//Texte de la page n°2
 			g.drawString("Joueur 1:", 300, 180);
@@ -298,6 +317,16 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 			case "Charger un terrain":
 				break;
 			case "Charger une partie":
+				String nomFichier = questionSauvegarde();
+				if (!nomFichier.equals("Pas de partie")){
+					EditeurFichier edit = new EditeurFichier();
+					String[] fichierCharge = edit.lecture("Sauvegardes/" + nomFichier);
+					//System.out.println(fichierCharge[0]);
+					
+					chargementPartie(fichierCharge, fen);
+					
+				}
+				zeroPosClique();
 				break;
 			case "Suivant":
 				String[] textMenu2 = new String[nbJoueur+2];	//le premier joueur ne peut pas �tre un ordinateur
@@ -338,6 +367,9 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 			case "Commencer":
 				zeroPosClique();
 				Plateau test = new Plateau();
+				PanneauPlateau pan = new PanneauPlateau();
+				test.setPanneau(pan);
+				pan.setFormeCase(formeCase);
 				test.initPlateau(hauteurTerrain, largeurTerrain, obstacles);	//TODO faire obstacles losanges
 				test.setChoixAffichage('G');
 				Joueur[] liste = new Joueur[nbJoueur];
@@ -350,12 +382,9 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 					liste[i].conquerir(liste[i].getCouleur(), test);
 				}
 				test.setListeJoueurs(liste);
-				PanneauPlateau pan = new PanneauPlateau();
-				pan.setFormeCase(formeCase);
 				fen.setContentPane(pan);
 				pan.setPlateau(test.getPlateau());
 				pan.setListeJoueur(test.getListeJoueurs());
-				test.setPanneau(pan);
 				fen.repaint();
 				fen.revalidate();
 				test.partie();
@@ -433,13 +462,13 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 	public String questionStr(String text, int numeroJoueur){
 		String reponse = "";
 		do {
-			 reponse = JOptionPane.showInputDialog(null,"Nom du " + text + " (avec moins de 8 caract�res):", text, JOptionPane.QUESTION_MESSAGE);
+			 reponse = JOptionPane.showInputDialog(null,"Nom du " + text + " (avec moins de 8 caractères):", text, JOptionPane.QUESTION_MESSAGE);
 			 if(reponse == null) reponse = listeNomJoueur[numeroJoueur];
 		}while(reponse.length()>8 || reponse.length()<0);
 		return reponse;
 	}
 	public String questionIa(int numeroIa){
-		String[] nomOrdi = {"Timmy", "John", "Resetti"};
+		String[] nomOrdi = {"Timmy", "John", "Resetti", "Chuck Norris"};
 		String nom = (String)JOptionPane.showInputDialog(null, 
 				"Choisissez l'ordinateur",
 				"Choix ordinateur",
@@ -448,6 +477,18 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 				nomOrdi,
 				nomOrdi[2]);
 		if(nom == null) nom = listeNomJoueur[numeroIa];
+		return nom;
+	}
+	public String questionSauvegarde(){
+		String[] nomOrdi = EditeurFichier.nomFichierDossier("Sauvegardes");;
+		String nom = (String)JOptionPane.showInputDialog(null, 
+				"Choisissez la partie à charger:",
+				"Chargement de partie",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				nomOrdi,
+				nomOrdi[0]);
+		if(nom == null) nom = "Pas de partie";
 		return nom;
 	}
 	
@@ -535,6 +576,82 @@ public class PanMenuJouer extends PanneauMenuPrincipal{
 
 	
 
+	private void chargementPartie(String[] donnees, Fenetre fen){
+		for (String t: donnees) System.out.println("+++++++++++++++++++++"+t);
+		//String[] test = donnees[5].split("null"); sépare quand même en deux chaîne
+		//System.out.println(donnees[1].split(" ")[1]);		Différencie bien les espaces insécables des autres
+		
+		int indiceFinListeJoueur = 0;
+		for (int i=2; i<6; i++){
+			if (donnees[i].equals("carré") || donnees[i].equals("losange") || donnees[i].equals("hexagone"))
+				indiceFinListeJoueur = i-1;
+		}
+		
+		
+		zeroPosClique();
+		Plateau test = new Plateau();
+		PanneauPlateau pan = new PanneauPlateau();
+		test.setPanneau(pan);
+		pan.setFormeCase(donnees[indiceFinListeJoueur+1]);
+		test.initPlateau(donnees[8].split("\u00A0").length, donnees.length-(indiceFinListeJoueur+2), 
+				(Integer.parseInt(donnees[indiceFinListeJoueur+2])==0?false:true));
+		for (int i=0; i<test.getPlateau().length; i++){
+			for (int j=0; j<test.getPlateau()[0].length; j++){
+				System.out.print(test.getPlateau()[i][j].getCouleur());
+			}
+			System.out.println();
+		}
+		fichierATableau(donnees, indiceFinListeJoueur, test);
+		test.setChoixAffichage('G');
+		Joueur[] liste = new Joueur[indiceFinListeJoueur];
+		boolean[] listeIa = creerListeIa(donnees, indiceFinListeJoueur);
+		int[][] positionDepart = {{0,0},{hauteurTerrain-1,largeurTerrain-1},{0,largeurTerrain-1},{hauteurTerrain-1,0}};
+		String[] listeNomJoueurTemp = creerListeNomJoueur(donnees, indiceFinListeJoueur);
+		for (int i=0; i<indiceFinListeJoueur; i++){
+			if (listeIa[i]) liste[i] = new IA();
+			else liste[i] = new Joueur();
+			liste[i].setNom(listeNomJoueurTemp[i]);
+			test.creationJoueur(positionDepart[i][0], positionDepart[i][1], liste[i]);
+			liste[i].conquerir(liste[i].getCouleur(), test);
+		}
+		test.setListeJoueurs(liste);
+		fen.setContentPane(pan);
+		pan.setPlateau(test.getPlateau());
+		pan.setListeJoueur(test.getListeJoueurs());
+		int indiceDepart = 0;
+		for (int i=0; i<indiceFinListeJoueur; i++){
+			if (donnees[0].equals(donnees[i+1].split("\u00A0")[0])) indiceDepart = i+1;
+		}
+		fen.repaint();
+		fen.revalidate();
+		test.partie(indiceDepart);
+	}
 
+	private void fichierATableau(String[] donnees, int indiceListe, Plateau plat){
+		Case[][] plateauTemp = plat.getPlateau();
+		for (int i=0; i<donnees.length-(indiceListe+2); i++){
+			for (int j=0; j<donnees[8].split("\u00A0").length; j++){
+				String tempS = (donnees[i+indiceListe+3].split("null"))[1];
+				char tempC = (tempS.split("\u00A0")[j]).charAt(0);
+				plateauTemp[i][j].setCouleur(tempC);
+			}
+		}
+		plat.setPlateau(plateauTemp);
+	}
+	
+	private String[] creerListeNomJoueur(String[] donnees, int indiceListe){
+		String[] nomJoueur = new String[indiceListe];
+		for(int i=0; i<indiceListe; i++){
+			nomJoueur[i] = donnees[i+1].split("\u00A0")[0];
+		}
+		return nomJoueur;
+	}
 
+	private boolean[] creerListeIa(String[] donnees, int indiceListe){
+		boolean[] listeIa = choixIa;
+		for (int i=0; i<indiceListe; i++){
+			if (donnees[i+1].split("\u00A0")[1].equals("IA"))listeIa[i] = true;
+		}
+		return listeIa;
+	}
 }

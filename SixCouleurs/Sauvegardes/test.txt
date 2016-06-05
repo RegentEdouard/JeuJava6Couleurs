@@ -1,0 +1,20 @@
+Joueur 1
+Joueur 1 I Joueur
+carré
+Joueur 2 B Joueur
+carré
+nullI j b j o b o r j j j o r i o 
+nullr b j b j i i o i i b o i j v 
+nullo v b v o i b r o i r b o o r 
+nulli r v b v j v j r r v j b r j 
+nullj j r i j o b o j b j i b b b 
+nullr v v i b b r v o i i j v j o 
+nullj i v r r v i o i v v o j i r 
+nullv i j o i i r r j r i i i j i 
+nullr i b j i r j b v o i v i j b 
+nullr j v o b j o i i j v v i r r 
+nullo i i b i i j o v r o b j i j 
+nullj j i r v o j i o i v v i r r 
+nullb o r j b r i i v r i r o i r 
+nulli b i j o r i r i o r v j v B 
+nullr v b b b b v v v b r v b o B 

@@ -49,90 +49,48 @@ public class Joueur {
 	public void conquerir(char couleur, Plateau p){	//couleur est en majuscule
 		this.couleur = couleur;
 		p.modification(territoire, couleur);
-		boolean fin = false;	//vérifie s'il y a eu des modifications sur le terrain
-		char[][] terrain = p.getPlateau();	//récupération
-		while (fin == false){
-			fin = true;
-			for (int i=0; i<terrain.length; i++){
-				for (int j=0; j<terrain[0].length; j++){
-					if (terrain[i][j] == couleur){
-//						switch (p.getPanneau().getFormeCase()){
-//						case "carré":
-							if (j>0 && terrain[i][j-1] == (char)((int)couleur+32)){
-								terrain[i][j-1] = couleur;
-								territoire[i][j-1] = true;
-								score ++;
-								fin = false;
-							}
-							if (j<terrain[0].length-1 && terrain[i][j+1] == (char)((int)couleur+32)){
-								terrain[i][j+1] = couleur;
-								territoire[i][j+1] = true;
-								score ++;
-								fin = false;
-							}
-//							break;
-//						case "losange":
-//							if (j>0 && terrain[i-1][j-1] == (char)((int)couleur+32)){
-//								terrain[i-1][j-1] = couleur;
-//								territoire[i-1][j-1] = true;
-//								score ++;
-//								fin = false;
-//							}
-//							if (j<terrain[0].length-1 && terrain[i-1][j+1] == (char)((int)couleur+32)){
-//								terrain[i-1][j+1] = couleur;
-//								territoire[i-1][j+1] = true;
-//								score ++;
-//								fin = false;
-//							}
-//							break;
-//						case "hexagone":
-//							break;
-//						}
-						
-					}
-				}
-			}
-			for (int j=0; j<terrain[0].length; j++){
-				for (int i=0; i<terrain.length; i++){
-					if (terrain[i][j] == couleur){
-//						switch (p.getPanneau().getFormeCase()){
-//						case "carré":
-//							break;
-//						case "losange":
-//						if (i>0 && terrain[i+1][j-1] == (char)((int)couleur+32)){
-//							terrain[i+1][j-1] = couleur;
-//							territoire[i+1][j-1] = true;
-//							score ++;
-//							fin = false;
-//						}
-//						if (i<terrain.length-1 && terrain[i+1][j+1] == (char)((int)couleur+32)){
-//							terrain[i+1][j+1] = couleur;
-//							territoire[i+1][j+1] = true;
-//							score ++;
-//							fin = false;
-//						}
-//							break;
-//						case "hexagone":
-//							break;
-//						}
-						if (i>0 && terrain[i-1][j] == (char)((int)couleur+32)){
-							terrain[i-1][j] = couleur;
-							territoire[i-1][j] = true;
-							score ++;
-							fin = false;
-						}
-						if (i<terrain.length-1 && terrain[i+1][j] == (char)((int)couleur+32)){
-							terrain[i+1][j] = couleur;
-							territoire[i+1][j] = true;
-							score ++;
-							fin = false;
-						}
-					}
-				}
+		Case[][] terrain = p.getPlateau();	//récupération
+
+		
+		//Recherche de la position de départ
+		int posDepartX = 0, posDepartY = 0;
+		if (p.getPlateau()[territoire.length-1][0].getCouleur() == couleur) posDepartX = territoire.length-1;
+		if (p.getPlateau()[0][territoire[0].length-1].getCouleur() == couleur) posDepartY = territoire[0].length-1;
+		if (p.getPlateau()[territoire.length-1][territoire[0].length-1].getCouleur() == couleur) {
+			posDepartX = territoire.length-1;
+			posDepartY = territoire[0].length-1;
+		}
+
+		for(int i=0; i<territoire.length; i++){
+			for(int j=0; j<territoire[0].length; j++){
+				territoire[i][j] = false;
 			}
 		}
 
+		parcoursVoisin(terrain, terrain[posDepartX][posDepartY], couleur);
+
+
 		p.setPlateau(terrain);
+	}
+
+	private void parcoursVoisin(Case[][] terrain, Case caseVerif, char couleur){
+		if (caseVerif.getCouleur() == couleur){
+			territoire[caseVerif.getY()][caseVerif.getX()] = true;
+			for (int i=0; i<caseVerif.getVoisin().length; i++){
+				if (caseVerif.getVoisin()[i] != null && territoire[caseVerif.getVoisin()[i].getY()][caseVerif.getVoisin()[i].getX()] != true){
+					parcoursVoisin(terrain, caseVerif.getVoisin()[i], couleur);
+				}	
+			}
+		}
+		else if(caseVerif.getCouleur() == (char)((int)couleur+32)){
+			caseVerif.setCouleur(couleur);
+			territoire[caseVerif.getY()][caseVerif.getX()] = true;
+			score ++;
+			for (int i=0; i<caseVerif.getVoisin().length; i++){
+				if (caseVerif.getVoisin()[i] != null)
+					parcoursVoisin(terrain, caseVerif.getVoisin()[i], couleur);
+			}
+		}
 	}
 
 	public void jouer(Joueur[] liste, Plateau p, PanneauPlateau pan, char choix){
@@ -168,7 +126,7 @@ public class Joueur {
 
 			while (couleur == 'A'){
 				couleur = testCouleurGraphique(pan, bonneCouleur, listeCouleurJouable, tabCoordonnees, couleur);
-				cliqueBoutonSauvegarder(liste, pan);
+				cliqueBoutonSauvegarder(liste, p);
 			}
 			pan.setPosCliqueX(0);
 			pan.setPosCliqueY(0);
@@ -262,41 +220,47 @@ public class Joueur {
 		return tabCoordonnees;
 	}
 	
-	private void cliqueBoutonSauvegarder(Joueur[] liste, PanneauPlateau pan){
-		int X = pan.getPosCliqueX();
-		int Y = pan.getPosCliqueY();
+	private void cliqueBoutonSauvegarder(Joueur[] liste, Plateau plat){
+		int X = plat.getPanneau().getPosCliqueX();
+		int Y = plat.getPanneau().getPosCliqueY();
 
 		if (935<X && X<943+153){
 			if (657<Y && Y<689){
 				EditeurFichier editFichier = new EditeurFichier();
 				String nomFichier = editFichier.fenetreSauvegarder();
-				if (nomFichier.equals("")) System.out.println("Pas d'entrée");
+				if (nomFichier == null || nomFichier.equals("")) System.out.println("Pas d'entrée");
 				else {
-					if (editFichier.existanceFichierDossier("Sauvegardes", nomFichier + ".txt")){
+					if (editFichier.existanceFichierDossier("Sauvegardes/", nomFichier + ".txt")){
 						boolean choix = editFichier.fenetreBouton();
 						if (choix){
-							String[] fichierSauvegarde = adapterSauvegardeString(pan);
-							String informations = nom + "\u00A0";			//nom du joueur jouant son tour
+							String[] fichierSauvegarde = adapterSauvegardeString(plat.getPanneau());
+							String informations = nom + System.getProperty("line.separator");	//nom du joueur jouant son tour
 							for (int i=0; i<liste.length; i++){			//Liste de tous les joueurs
-								informations = informations + liste[i].getNom() + "\u00A0" + liste[i].getCouleur() + "\u00A0";
+								informations = informations + liste[i].getNom() + "\u00A0" + liste[i].getCouleur() + "\u00A0"
+										+ liste[i].getClass().getSimpleName() + System.getProperty("line.separator");
 							}
+							informations += plat.getPanneau().getFormeCase() + System.getProperty("line.separator") +
+									plat.getNbObstacles() + System.getProperty("line.separator");
 							
-							editFichier.ecriture(informations, fichierSauvegarde, "Sauvegardes" + nomFichier);
+							editFichier.ecriture(informations, fichierSauvegarde, "Sauvegardes/" + nomFichier);
 						}
 					}else {
-						String[] fichierSauvegarde = adapterSauvegardeString(pan);
-						String informations = nom + "≡";			//nom du joueur jouant son tour
+						String[] fichierSauvegarde = adapterSauvegardeString(plat.getPanneau());
+						String informations = nom + System.getProperty("line.separator");	//nom du joueur jouant son tour
 						for (int i=0; i<liste.length; i++){			//Liste de tous les joueurs
-							informations = informations + liste[i].getNom() + "‼" + liste[i].getCouleur() + "≡";
+							informations = informations + liste[i].getNom() + "\u00A0" + liste[i].getCouleur() + "\u00A0"
+									+ liste[i].getClass().getSimpleName() + System.getProperty("line.separator");
 						}
+						informations += plat.getPanneau().getFormeCase() + System.getProperty("line.separator") +
+								plat.getNbObstacles() + System.getProperty("line.separator");
 						
-						editFichier.ecriture(informations, fichierSauvegarde, "Sauvegardes" + nomFichier);
+						editFichier.ecriture(informations, fichierSauvegarde, "Sauvegardes/" + nomFichier);
 					}
 					
 				}
 				
-				pan.setPosCliqueX(0);
-				pan.setPosCliqueY(0);
+				plat.getPanneau().setPosCliqueX(0);
+				plat.getPanneau().setPosCliqueY(0);
 			}
 		}
 		
@@ -304,11 +268,13 @@ public class Joueur {
 
 	private String[] adapterSauvegardeString(PanneauPlateau pan){
 		//TODO réécrire le tableau du terrain
-		char[][] terrain = pan.getPlateau();
+		Case[][] terrain = pan.getPlateau();
 		String[] listeTableau = new String[terrain.length];
 		for (int i=0; i<listeTableau.length; i++){
 			for (int j=0; j<terrain[0].length; j++){
-				listeTableau[i] = listeTableau[i] + terrain[i][j] + "≡";
+				if ((int) terrain[i][j].getCouleur()<97)
+					listeTableau[i] = listeTableau[i] + (char)((int)terrain[i][j].getCouleur()+32)+ "\u00A0";
+				else listeTableau[i] = listeTableau[i] + terrain[i][j].getCouleur()+ "\u00A0";
 			}
 		}
 		return listeTableau;

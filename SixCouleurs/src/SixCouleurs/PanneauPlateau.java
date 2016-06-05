@@ -3,15 +3,30 @@ package SixCouleurs;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.LinkedList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 public class PanneauPlateau extends JPanel  {
 
-	private char[][] plateau;
-	private String formeCase;
+	private Case[][] plateau;
+	private String formeCase = "carré";
 	private Joueur[] listeJoueur;
 	private int joueurActif;
 	private boolean fin = false;
@@ -20,6 +35,7 @@ public class PanneauPlateau extends JPanel  {
 	private int posSourisX = 0;
 	private int posSourisY = 0;
 	private char couleurSouris;
+	private JSONObject jsonObject;
 
 	public void paintComponent(Graphics g) {
 
@@ -28,7 +44,7 @@ public class PanneauPlateau extends JPanel  {
 		// On dessine celui-ci afin qu'il prenne tout la surface
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
 		int hauteur = 740-80-25;	// Hauteur de la fenetre sans les bords
-		int largeur = 900-40;	// Largeur de la fen�tre sans les bords
+		int largeur = 900-40;	// Largeur de la fenètre sans les bords
 
 		//Création de la séparation entre le terrain et les données
 		g.setColor(Color.lightGray);
@@ -38,44 +54,44 @@ public class PanneauPlateau extends JPanel  {
 		//Affichage du plateau
 		for (int i=0; i<plateau.length; i++){
 			for (int j=0; j<plateau[0].length; j++){	//'r','o','j','v','b','i'
-				switch(plateau[i][j]){					//Sélection des couleurs
+				switch(plateau[i][j].getCouleur()){					//Sélection des couleurs
 				case 'r':
-					g.setColor(Color.red);
+					g.setColor(new Color(Parametres.couleurR[0],Parametres.couleurR[1],Parametres.couleurR[2]));
 					break;
 				case 'R':
-					g.setColor(Color.red);
+					g.setColor(new Color(Parametres.couleurR[0],Parametres.couleurR[1],Parametres.couleurR[2]));
 					break;
 				case 'o':
-					g.setColor(new Color(255, 106, 0));	//Orange
+					g.setColor(new Color(Parametres.couleurO[0],Parametres.couleurO[1],Parametres.couleurO[2]));	//Orange
 					//g.setColor(Color.orange);
 					break;
 				case 'O':
-					g.setColor(new Color(255, 106, 0));	//Orange
+					g.setColor(new Color(Parametres.couleurO[0],Parametres.couleurO[1],Parametres.couleurO[2]));	//Orange
 					//g.setColor(Color.orange);
 					break;
 				case 'j':
-					g.setColor(new Color(255, 216, 0));	//Jaune
+					g.setColor(new Color(Parametres.couleurJ[0],Parametres.couleurJ[1],Parametres.couleurJ[2]));	//Jaune
 					break;
 				case 'J':
-					g.setColor(new Color(255, 216, 0));	//Jaune
+					g.setColor(new Color(Parametres.couleurJ[0],Parametres.couleurJ[1],Parametres.couleurJ[2]));	//Jaune
 					break;
 				case 'v':
-					g.setColor(Color.green);
+					g.setColor(new Color(Parametres.couleurV[0],Parametres.couleurV[1],Parametres.couleurV[2]));
 					break;
 				case 'V':
-					g.setColor(Color.green);
+					g.setColor(new Color(Parametres.couleurV[0],Parametres.couleurV[1],Parametres.couleurV[2]));
 					break;
 				case 'b':
-					g.setColor(Color.blue);
+					g.setColor(new Color(Parametres.couleurB[0],Parametres.couleurB[1],Parametres.couleurB[2]));
 					break;
 				case 'B':
-					g.setColor(Color.blue);
+					g.setColor(new Color(Parametres.couleurB[0],Parametres.couleurB[1],Parametres.couleurB[2]));
 					break;
 				case 'i':
-					g.setColor(Color.magenta);
+					g.setColor(new Color(Parametres.couleurI[0],Parametres.couleurI[1],Parametres.couleurI[2]));
 					break;
 				case 'I':
-					g.setColor(Color.magenta);
+					g.setColor(new Color(Parametres.couleurI[0],Parametres.couleurI[1],Parametres.couleurI[2]));
 					break;
 				case 'N':
 					g.setColor(Color.black);
@@ -135,29 +151,27 @@ public class PanneauPlateau extends JPanel  {
 					g.drawRect(i*largeurCase+21+ecartGauche, j*hauteurCase+21+ecartHaut, largeurCase-2, hauteurCase-2);
 					break;
 				}
-				
 
 
-				//System.out.print(plateau[i][j] + " ");
 			}
 		}
 
-		g.setColor(Color.red);
+		g.setColor(new Color(Parametres.couleurR[0],Parametres.couleurR[1],Parametres.couleurR[2]));
 		if (couleurSouris == 'R') g.fillRect(361, 659, 23, 23);	//Affiche la couleur survollée
 		else g.fillRect(362, 660, 21, 21);						//Affichage de la sélection de couleur
-		g.setColor(new Color(255, 106, 0));	//Orange
+		g.setColor(new Color(Parametres.couleurO[0],Parametres.couleurO[1],Parametres.couleurO[2]));
 		if (couleurSouris == 'O') g.fillRect(392, 659, 23, 23);	//Affiche la couleur survollée
 		else g.fillRect(393, 660, 21, 21);						//Affichage de la sélection de couleur
-		g.setColor(new Color(255, 216, 0));	//Jaune
+		g.setColor(new Color(Parametres.couleurJ[0],Parametres.couleurJ[1],Parametres.couleurJ[2]));
 		if (couleurSouris == 'J')g.fillRect(423, 659, 23, 23);	//Affiche la couleur survollée
 		else g.fillRect(424, 660, 21, 21);						//Affichage de la sélection de couleur
-		g.setColor(Color.green);
+		g.setColor(new Color(Parametres.couleurV[0],Parametres.couleurV[1],Parametres.couleurV[2]));
 		if (couleurSouris == 'V')g.fillRect(454, 659, 23, 23);	//Affiche la couleur survollée
 		else g.fillRect(455, 660, 21, 21);						//Affichage de la sélection de couleur
-		g.setColor(Color.blue);
+		g.setColor(new Color(Parametres.couleurB[0],Parametres.couleurB[1],Parametres.couleurB[2]));
 		if (couleurSouris == 'B')g.fillRect(485, 659, 23, 23);	//Affiche la couleur survollée
 		else g.fillRect(486, 660, 21, 21);						//Affichage de la sélection de couleur
-		g.setColor(Color.magenta);
+		g.setColor(new Color(Parametres.couleurI[0],Parametres.couleurI[1],Parametres.couleurI[2]));
 		if (couleurSouris == 'I')g.fillRect(516, 659, 23, 23);	//Affiche la couleur survollée
 		else g.fillRect(517, 660, 21, 21);						//Affichage de la sélection de couleur
 
@@ -193,8 +207,10 @@ public class PanneauPlateau extends JPanel  {
 		g.drawString("Score:", 930, 80);
 		for (int i=0; i<listeJoueur.length; i++){
 			if (listeJoueur[i].getNom() == null || listeJoueur[i].getNom() == "      ") listeJoueur[i].setNom("Joueur " + (i+1));
+			afficherCouleurJoueur(listeJoueur[i], i, g);
 			g.drawString(listeJoueur[i].getNom() + ": " + listeJoueur[i].getScore(), 910, 110+i*25);
 		}
+		g.setColor(new Color(62, 67, 94));
 		font = new Font("Cooper Black", Font.BOLD, 22);
 		g.setFont(font);
 		g.drawString("C'est au tour de ", 910, 260);
@@ -209,6 +225,41 @@ public class PanneauPlateau extends JPanel  {
 			g.drawString("Vainqueur :", 935, 500);
 			g.drawString(listeJoueur[joueurActif].getNom() + " !", 945, 525);
 			g.drawString("Félicitation", 935, 550);
+		}
+	}
+	
+	private void afficherCouleurJoueur(Joueur joueur, int indice, Graphics g){
+		switch (joueur.getCouleur()){
+		case 'R':
+			g.setColor(new Color(Parametres.couleurR[0],Parametres.couleurR[1],Parametres.couleurR[2]));
+			break;
+		case 'O':
+			g.setColor(new Color(Parametres.couleurO[0],Parametres.couleurO[1],Parametres.couleurO[2]));
+			break;
+		case 'J':
+			g.setColor(new Color(Parametres.couleurJ[0],Parametres.couleurJ[1],Parametres.couleurJ[2]));
+			break;
+		case 'V':
+			g.setColor(new Color(Parametres.couleurV[0],Parametres.couleurV[1],Parametres.couleurV[2]));
+			break;
+		case 'B':
+			g.setColor(new Color(Parametres.couleurB[0],Parametres.couleurB[1],Parametres.couleurB[2]));
+			break;
+		case 'I':
+			g.setColor(new Color(Parametres.couleurI[0],Parametres.couleurI[1],Parametres.couleurI[2]));
+			break;
+		}
+		g.fillRect(886, 45+(indice+2)*25, 18, 18);
+		
+		if (joueur.getClass().getSimpleName().equals("IA")){
+			try {
+				Image img = ImageIO.read(new File("IconIA.png"));
+				g.drawImage(img, 886, 45+(indice+2)*25, this);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+
+			}
 		}
 	}
 
@@ -235,14 +286,17 @@ public class PanneauPlateau extends JPanel  {
 			}
 		});
 		
+
+
+		
 		//System.out.println(MouseInfo.getPointerInfo().getLocation());
 	}
 
-	public char[][] getPlateau() {
+	public Case[][] getPlateau() {
 		return plateau;
 	}
 
-	public void setPlateau(char[][] plateau) {
+	public void setPlateau(Case[][] plateau) {
 		this.plateau = plateau;
 	}
 

@@ -1,0 +1,25 @@
+Joueur 1
+Joueur 1 V Joueur
+Timmy O IA
+carré
+0
+nullv v v b j o r v b v j v j j r 
+nullv i b i i v o r r v b j i o o 
+nullv r v j b v o r r i o v o o o 
+nulli j i i i r r i b r j r b r r 
+nullv o o r b j v j v o o j b b o 
+nullr b o v v o v r b r o r b j r 
+nulli i o o o r r j o b i j o r r 
+nullj b v b o i i j j j j o i r j 
+nullo j i r v r o j b b i o i i j 
+nullj r o b o o i b b r r v i i o 
+nulli r i v v o i j i b v r j r j 
+nullb b b j i i v j j o j i b b r 
+nulli b j i v b i o r r i o v b j 
+nullj j r b v r r j v i b o v i b 
+nullj b r v b r b j i o b i i o v 
+nullr r v o o r v v v b j o i b o 
+nullo o j i b b v i i o v j v r o 
+nulli v i r v i v o j v v j r r o 
+nulli j v b i v o o r o j v r o o 
+nullo r b v j o r v i b i o j o o 

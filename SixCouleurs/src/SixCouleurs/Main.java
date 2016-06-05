@@ -16,6 +16,7 @@ public class Main {
 		}
 		
 
+		Parametres.couleur();
 		char[] tab = {'o','b','j','i','r','v','O','B','J','I','R','V'};
 		for (int i=0; i<12; i++){
 			System.out.print((int)tab[i] + " ");
@@ -23,7 +24,7 @@ public class Main {
 		Plateau test = new Plateau();
 		test.setChoixAffichage(choixAff);
 		test.debutPartie();
-		
+		//TODO Refaire le redemarrer partie
 		
 	}
 

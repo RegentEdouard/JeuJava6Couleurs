@@ -17,13 +17,13 @@ public class EditeurFichier {
 
 	public String[] lecture(String stringChemin){
 		Path chemin = Paths.get(stringChemin);
-		Charset charset = Charset.forName("US-ASCII");
+		Charset charset = Charset.forName("Cp1252");
 		LinkedList<String> listeTexte= new LinkedList<String>();
 		try (BufferedReader reader = Files.newBufferedReader(chemin, charset)) {
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				listeTexte.add(line);
-				System.out.println(line);
+				//System.out.println(line);
 			}
 		} catch (IOException x) {
 			System.err.format("IOException: %s%n", x);
@@ -65,7 +65,7 @@ public class EditeurFichier {
 			System.err.format("IOException: %s%n", x);
 		}
 		for (int i=0; i<listeFichier.length; i++){
-			if (listeFichier[i] == nomFichier) return true;	//Le fichier est bien pr�sent dans le dossier
+			if (listeFichier[i].equals(nomFichier)) return true;	//Le fichier est bien présent dans le dossier
 		}
 		return false;
 	}
@@ -99,7 +99,7 @@ public class EditeurFichier {
 	}
 	
 	public boolean fenetreBouton(){
-		int option = JOptionPane.showConfirmDialog(null, "Le fichier existe d�j�,"+System.getProperty("line.separator")+
+		int option = JOptionPane.showConfirmDialog(null, "Le fichier existe déjà,"+System.getProperty("line.separator")+
 				"Voulez-vous remplacer ?", "Confirmer l'enregistrement", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 		if(option != JOptionPane.NO_OPTION && option != JOptionPane.CLOSED_OPTION){
@@ -108,5 +108,31 @@ public class EditeurFichier {
 			return false;
 		}
 		
+	}
+	
+	public static String[] nomFichierDossier(String chemin){
+		Path jdkPath = Paths.get(chemin);
+		String[] liste = new String[0];
+		try{
+			DirectoryStream<Path> stream = Files.newDirectoryStream(jdkPath);
+			LinkedList<String> listeFichier= new LinkedList<String>();
+			try { 
+				Iterator<Path> iterator = stream.iterator();
+				while(iterator.hasNext()) {
+					Path p = iterator.next();
+					listeFichier.add(p.getFileName().toString());
+				}
+			} finally { 
+				stream.close(); 
+			} 
+			liste = new String[listeFichier.size()];
+			for (int i=0; i<liste.length; i++){
+				liste[i] = listeFichier.peek();
+				listeFichier.remove();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return liste;
 	}
 }

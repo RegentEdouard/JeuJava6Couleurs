@@ -25,12 +25,12 @@ public class PanneauMenuPrincipal extends JPanel{
 	public void paintComponent(Graphics g) {
 		if (logo){
 			try {
-				Image img = ImageIO.read(new File("FondTest1.png"));
+				Image img = ImageIO.read(new File("Photo/FondMenuPrincipal.png"));
 				g.drawImage(img, 0, 0, this);
-				img = ImageIO.read(new File("FondTestT.png"));
-				g.drawImage(img, 0, 0, this);
-				img = ImageIO.read(new File("Titre.png"));
-				g.drawImage(img, 15, 10, this);
+//				img = ImageIO.read(new File("FondTestT.png"));
+//				g.drawImage(img, 0, 0, this);
+//				img = ImageIO.read(new File("Titre.png"));
+//				g.drawImage(img, 15, 10, this);
 				//Pour une image de fond
 				//g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
 
@@ -42,6 +42,7 @@ public class PanneauMenuPrincipal extends JPanel{
 
 		//Affichage des boutons
 		Font font = new Font("Cooper Black", Font.BOLD, 30);
+		
 		g.setFont(font);
 		g.setColor(new Color(62, 67, 94));
 		//Affichage du texte
@@ -118,6 +119,8 @@ public class PanneauMenuPrincipal extends JPanel{
 			case "Jouer en réseau":
 				break;
 			case "Règles":
+				PanneauRegle menuRegle = new PanneauRegle();
+				menuRegle.menuRegle(fen);
 				break;
 			case "Scores":
 				break;
